@@ -34,7 +34,7 @@ import {
   listThemeWeeksHandler,
 } from "./features/themes/http.js";
 import { getMyProfileHandler, upsertMyProfileHandler } from "./features/users/http.js";
-import { handleHttpError, sendJson } from "./lib/http.js";
+import { type HttpHandler, handleHttpError, sendJson, withCors } from "./lib/http.js";
 import { logError, logInfo } from "./lib/logger.js";
 import { assertWithinRateLimit } from "./lib/rate-limit.js";
 
@@ -43,7 +43,18 @@ setGlobalOptions({
   maxInstances: 10,
 });
 
-export const health = onRequest({ cors: true }, async (req, res) => {
+/**
+ * Helper that creates an `onRequest` function with manual CORS support via
+ * the `withCors` wrapper. We intentionally do NOT use Firebase's built-in
+ * `cors: true` option because it intercepts OPTIONS preflight requests at the
+ * infrastructure level and can silently fail (especially during cold starts),
+ * returning responses without the required `Access-Control-Allow-Origin`
+ * header. By handling CORS entirely in our own wrapper, we guarantee the
+ * correct headers are always set for every request, including OPTIONS.
+ */
+const corsRequest = (handler: HttpHandler) => onRequest(withCors(handler));
+
+export const health = corsRequest(async (req, res) => {
   try {
     const ip = req.ip ?? "unknown";
     assertWithinRateLimit({
@@ -65,35 +76,29 @@ export const health = onRequest({ cors: true }, async (req, res) => {
   }
 });
 
-export const getSessionContext = onRequest({ cors: true }, getSessionContextHandler);
-export const getMyProfile = onRequest({ cors: true }, getMyProfileHandler);
-export const upsertMyProfile = onRequest({ cors: true }, upsertMyProfileHandler);
-export const adminListUsers = onRequest({ cors: true }, adminListUsersHandler);
-export const createItem = onRequest({ cors: true }, createItemHandler);
-export const listItems = onRequest({ cors: true }, listItemsHandler);
-export const getItemDetail = onRequest({ cors: true }, getItemDetailHandler);
-export const updateItem = onRequest({ cors: true }, updateItemHandler);
-export const archiveItem = onRequest({ cors: true }, archiveItemHandler);
-export const addItemMedia = onRequest({ cors: true }, addItemMediaHandler);
-export const getCurrentThemeWeek = onRequest({ cors: true }, getCurrentThemeWeekHandler);
-export const listThemeWeeks = onRequest({ cors: true }, listThemeWeeksHandler);
-export const createThemeWeek = onRequest({ cors: true }, createThemeWeekHandler);
-export const listPublishedAiSuggestions = onRequest(
-  { cors: true },
-  listPublishedAiSuggestionsHandler,
-);
-export const listPendingAiSuggestions = onRequest({ cors: true }, listPendingAiSuggestionsHandler);
-export const approveAiSuggestion = onRequest({ cors: true }, approveAiSuggestionHandler);
-export const deleteAiSuggestion = onRequest({ cors: true }, deleteAiSuggestionHandler);
-export const adminGenerateWeeklySuggestions = onRequest(
-  { cors: true },
-  adminGenerateWeeklySuggestionsHandler,
-);
-export const listEcoContents = onRequest({ cors: true }, listEcoContentsHandler);
-export const getEcoContentDetail = onRequest({ cors: true }, getEcoContentDetailHandler);
-export const trackEcoView = onRequest({ cors: true }, trackEcoViewHandler);
-export const adminListEcoContents = onRequest({ cors: true }, adminListEcoContentsHandler);
-export const adminCreateEcoContent = onRequest({ cors: true }, adminCreateEcoContentHandler);
+export const getSessionContext = corsRequest(getSessionContextHandler);
+export const getMyProfile = corsRequest(getMyProfileHandler);
+export const upsertMyProfile = corsRequest(upsertMyProfileHandler);
+export const adminListUsers = corsRequest(adminListUsersHandler);
+export const createItem = corsRequest(createItemHandler);
+export const listItems = corsRequest(listItemsHandler);
+export const getItemDetail = corsRequest(getItemDetailHandler);
+export const updateItem = corsRequest(updateItemHandler);
+export const archiveItem = corsRequest(archiveItemHandler);
+export const addItemMedia = corsRequest(addItemMediaHandler);
+export const getCurrentThemeWeek = corsRequest(getCurrentThemeWeekHandler);
+export const listThemeWeeks = corsRequest(listThemeWeeksHandler);
+export const createThemeWeek = corsRequest(createThemeWeekHandler);
+export const listPublishedAiSuggestions = corsRequest(listPublishedAiSuggestionsHandler);
+export const listPendingAiSuggestions = corsRequest(listPendingAiSuggestionsHandler);
+export const approveAiSuggestion = corsRequest(approveAiSuggestionHandler);
+export const deleteAiSuggestion = corsRequest(deleteAiSuggestionHandler);
+export const adminGenerateWeeklySuggestions = corsRequest(adminGenerateWeeklySuggestionsHandler);
+export const listEcoContents = corsRequest(listEcoContentsHandler);
+export const getEcoContentDetail = corsRequest(getEcoContentDetailHandler);
+export const trackEcoView = corsRequest(trackEcoViewHandler);
+export const adminListEcoContents = corsRequest(adminListEcoContentsHandler);
+export const adminCreateEcoContent = corsRequest(adminCreateEcoContentHandler);
 
 export const generateWeeklySuggestions = onSchedule(
   {

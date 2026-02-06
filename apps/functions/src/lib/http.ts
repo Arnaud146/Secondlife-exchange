@@ -2,6 +2,33 @@ import type { HttpsFunction, Request } from "firebase-functions/v2/https";
 
 type Response = Parameters<HttpsFunction>[1];
 
+export type HttpHandler = (req: Request, res: Response) => void | Promise<void>;
+
+/**
+ * Wraps an HTTP handler with explicit CORS support.
+ *
+ * This replaces the built-in `cors: true` option on `onRequest` which can
+ * silently fail during cold starts, leaving preflight OPTIONS requests
+ * without the required `Access-Control-Allow-Origin` header.
+ */
+export function withCors(handler: HttpHandler): HttpHandler {
+  return async (req, res) => {
+    const origin = req.headers.origin;
+
+    res.set("Access-Control-Allow-Origin", origin || "*");
+    res.set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+    res.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
+    res.set("Access-Control-Max-Age", "3600");
+
+    if (req.method === "OPTIONS") {
+      res.status(204).send("");
+      return;
+    }
+
+    await handler(req, res);
+  };
+}
+
 export class HttpError extends Error {
   public status: number;
   public details?: unknown;
