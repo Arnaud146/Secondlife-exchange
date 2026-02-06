@@ -22,7 +22,7 @@ function formatCreatedAt(value: unknown) {
     }
   }
 
-  return "Unknown";
+  return "Inconnu";
 }
 
 export function ItemsList() {
@@ -49,7 +49,9 @@ export function ItemsList() {
         setItems((prev) => (params.reset ? response.items : [...prev, ...response.items]));
         setCursor(response.nextCursor);
       } catch (error) {
-        setErrorMessage(error instanceof Error ? error.message : "Unable to load items.");
+        setErrorMessage(
+          error instanceof Error ? error.message : "Impossible de charger les objets.",
+        );
       } finally {
         setIsLoading(false);
       }
@@ -66,7 +68,7 @@ export function ItemsList() {
       <div className="flex flex-wrap items-end gap-3 rounded-xl border bg-card p-4">
         <div className="space-y-1">
           <label htmlFor="statusFilter" className="block text-xs font-medium text-muted-foreground">
-            Status
+            Statut
           </label>
           <select
             id="statusFilter"
@@ -89,7 +91,7 @@ export function ItemsList() {
             onChange={(event) => setMineOnly(event.target.checked)}
             className="h-4 w-4 rounded border"
           />
-          My items only
+          Mes objets uniquement
         </label>
 
         <Button
@@ -97,7 +99,7 @@ export function ItemsList() {
           onClick={() => void loadItems({ reset: true })}
           disabled={isLoading}
         >
-          Refresh
+          Actualiser
         </Button>
       </div>
 
@@ -115,28 +117,28 @@ export function ItemsList() {
             <p className="mt-2 line-clamp-3 text-sm text-muted-foreground">{item.description}</p>
             <dl className="mt-3 space-y-1 text-xs text-muted-foreground">
               <div>
-                <dt className="inline font-semibold text-foreground">Category:</dt>{" "}
+                <dt className="inline font-semibold text-foreground">Catégorie :</dt>{" "}
                 <dd className="inline">{item.category}</dd>
               </div>
               <div>
-                <dt className="inline font-semibold text-foreground">State:</dt>{" "}
+                <dt className="inline font-semibold text-foreground">État :</dt>{" "}
                 <dd className="inline">{item.state}</dd>
               </div>
               <div>
-                <dt className="inline font-semibold text-foreground">Media:</dt>{" "}
+                <dt className="inline font-semibold text-foreground">Médias :</dt>{" "}
                 <dd className="inline">{item.mediaCount}</dd>
               </div>
               <div>
-                <dt className="inline font-semibold text-foreground">Created:</dt>{" "}
+                <dt className="inline font-semibold text-foreground">Créé le :</dt>{" "}
                 <dd className="inline">{formatCreatedAt(item.createdAt)}</dd>
               </div>
             </dl>
             <div className="mt-4 flex flex-wrap gap-2">
               <Button size="sm" asChild>
-                <Link href={`/items/${item.id}`}>View</Link>
+                <Link href={`/items/${item.id}`}>Voir</Link>
               </Button>
               <Button size="sm" variant="outline" asChild>
-                <Link href={`/items/${item.id}/edit`}>Edit</Link>
+                <Link href={`/items/${item.id}/edit`}>Modifier</Link>
               </Button>
             </div>
           </article>
@@ -145,7 +147,7 @@ export function ItemsList() {
 
       {items.length === 0 && !isLoading ? (
         <p className="rounded-xl border bg-card p-5 text-sm text-muted-foreground">
-          No items found for current filters.
+          Aucun objet trouvé pour les filtres actuels.
         </p>
       ) : null}
 
@@ -156,7 +158,7 @@ export function ItemsList() {
           variant="secondary"
           className="min-w-40"
         >
-          {isLoading ? "Loading..." : cursor ? "Load more" : "No more items"}
+          {isLoading ? "Chargement..." : cursor ? "Charger plus" : "Plus d'objets"}
         </Button>
       </div>
     </section>

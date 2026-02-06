@@ -11,13 +11,13 @@ export default async function AdminEcoContentsPage() {
     <main className="mx-auto w-full max-w-6xl space-y-6 px-6 py-12">
       <header className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="font-heading text-3xl font-bold">Admin eco contents</h1>
+          <h1 className="font-heading text-3xl font-bold">Administration des contenus éco</h1>
           <p className="text-sm text-muted-foreground">
-            Publish ecological resources and map them to weekly themes.
+            Publiez des ressources écologiques et associez-les aux thèmes hebdomadaires.
           </p>
         </div>
         <Button variant="outline" asChild>
-          <Link href="/admin">Back to admin</Link>
+          <Link href="/admin">Retour à l'admin</Link>
         </Button>
       </header>
       <AdminEcoManager />

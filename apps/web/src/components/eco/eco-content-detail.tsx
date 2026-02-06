@@ -31,7 +31,7 @@ function toDateSafe(value: unknown): Date | null {
 
 function formatDate(value: unknown): string {
   const date = toDateSafe(value);
-  return date ? date.toLocaleString() : "Unknown";
+  return date ? date.toLocaleString() : "Inconnu";
 }
 
 export function EcoContentDetail({ contentId }: { contentId: string }) {
@@ -58,7 +58,9 @@ export function EcoContentDetail({ contentId }: { contentId: string }) {
         if (!isMounted) {
           return;
         }
-        setErrorMessage(error instanceof Error ? error.message : "Unable to load eco content.");
+        setErrorMessage(
+          error instanceof Error ? error.message : "Impossible de charger le contenu éco.",
+        );
       } finally {
         if (isMounted) {
           setIsLoading(false);
@@ -86,11 +88,11 @@ export function EcoContentDetail({ contentId }: { contentId: string }) {
   }, [content]);
 
   if (isLoading) {
-    return <p className="text-sm text-muted-foreground">Loading eco content...</p>;
+    return <p className="text-sm text-muted-foreground">Chargement du contenu éco...</p>;
   }
 
   if (errorMessage || !content) {
-    return <p className="text-sm text-destructive">{errorMessage ?? "Eco content not found."}</p>;
+    return <p className="text-sm text-destructive">{errorMessage ?? "Contenu éco introuvable."}</p>;
   }
 
   return (
@@ -101,7 +103,7 @@ export function EcoContentDetail({ contentId }: { contentId: string }) {
             {content.type}
           </span>
           <span className="text-xs text-muted-foreground">
-            Published: {formatDate(content.publishedAt)}
+            Publié le : {formatDate(content.publishedAt)}
           </span>
         </div>
 
@@ -122,10 +124,10 @@ export function EcoContentDetail({ contentId }: { contentId: string }) {
 
       <section className="space-y-3 rounded-2xl border bg-card p-5">
         <h2 className="font-heading text-xl font-bold">Source</h2>
-        <p className="text-sm text-muted-foreground">Language: {content.lang.toUpperCase()}</p>
+        <p className="text-sm text-muted-foreground">Langue : {content.lang.toUpperCase()}</p>
         <Button asChild>
           <Link href={content.sourceUrl} target="_blank" rel="noreferrer noopener">
-            Open source
+            Ouvrir la source
           </Link>
         </Button>
       </section>

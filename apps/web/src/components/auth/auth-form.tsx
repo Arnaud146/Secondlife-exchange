@@ -28,7 +28,7 @@ function getErrorMessage(error: unknown) {
   if (error instanceof Error) {
     return error.message;
   }
-  return "Authentication failed.";
+  return "Échec de l'authentification.";
 }
 
 export function AuthForm({ mode }: { mode: AuthMode }) {
@@ -46,7 +46,7 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const isSignUp = mode === "signup";
-  const submitLabel = isSignUp ? "Create account" : "Sign in";
+  const submitLabel = isSignUp ? "Créer un compte" : "Se connecter";
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -89,7 +89,7 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
     <form onSubmit={onSubmit} className="space-y-4 rounded-2xl border bg-card p-6 shadow-sm">
       <div className="space-y-2">
         <label htmlFor="email" className="block text-sm font-medium">
-          Email
+          E-mail
         </label>
         <input
           id="email"
@@ -104,7 +104,7 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
 
       <div className="space-y-2">
         <label htmlFor="password" className="block text-sm font-medium">
-          Password
+          Mot de passe
         </label>
         <input
           id="password"
@@ -121,7 +121,7 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
         <>
           <div className="space-y-2">
             <label htmlFor="displayName" className="block text-sm font-medium">
-              Display name
+              Nom d'affichage
             </label>
             <input
               id="displayName"
@@ -137,7 +137,7 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
           </div>
           <div className="space-y-2">
             <label htmlFor="confirmPassword" className="block text-sm font-medium">
-              Confirm password
+              Confirmer le mot de passe
             </label>
             <input
               id="confirmPassword"
@@ -157,16 +157,16 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
       {errorMessage ? <p className="text-sm text-destructive">{errorMessage}</p> : null}
 
       <Button type="submit" className="w-full" disabled={isSubmitting}>
-        {isSubmitting ? "Please wait..." : submitLabel}
+        {isSubmitting ? "Veuillez patienter..." : submitLabel}
       </Button>
 
       <p className="text-sm text-muted-foreground">
-        {isSignUp ? "Already have an account?" : "Need an account?"}{" "}
+        {isSignUp ? "Vous avez déjà un compte ?" : "Pas encore de compte ?"}{" "}
         <Link
           href={isSignUp ? "/auth/signin" : "/auth/signup"}
           className="font-semibold text-primary hover:underline"
         >
-          {isSignUp ? "Sign in" : "Create one"}
+          {isSignUp ? "Se connecter" : "Créer un compte"}
         </Link>
       </p>
     </form>

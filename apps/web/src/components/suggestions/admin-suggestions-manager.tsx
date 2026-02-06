@@ -64,7 +64,7 @@ function PendingSuggestionCard({
 
       <p className="text-sm text-muted-foreground">{suggestion.rationale}</p>
       <p className="text-xs text-muted-foreground">
-        {createdAt ? `Created on ${createdAt.toLocaleString()}` : "Created date unavailable"}
+        {createdAt ? `Créé le ${createdAt.toLocaleString()}` : "Date de création indisponible"}
       </p>
 
       <div className="flex flex-wrap gap-2">
@@ -91,14 +91,14 @@ function PendingSuggestionCard({
 
       <div className="flex flex-wrap gap-2">
         <Button onClick={() => void onApprove(suggestion.id)} disabled={isMutating}>
-          Approve and publish
+          Approuver et publier
         </Button>
         <Button
           variant="destructive"
           onClick={() => void onDelete(suggestion.id)}
           disabled={isMutating}
         >
-          Reject and delete
+          Rejeter et supprimer
         </Button>
       </div>
     </article>
@@ -135,7 +135,9 @@ export function AdminSuggestionsManager() {
       setNextCursor(listed.nextCursor);
     } catch (error) {
       setErrorMessage(
-        error instanceof Error ? error.message : "Unable to load pending suggestions.",
+        error instanceof Error
+          ? error.message
+          : "Impossible de charger les suggestions en attente.",
       );
     } finally {
       setIsLoading(false);
@@ -159,7 +161,9 @@ export function AdminSuggestionsManager() {
       setNextCursor(listed.nextCursor);
     } catch (error) {
       setErrorMessage(
-        error instanceof Error ? error.message : "Unable to load pending suggestions.",
+        error instanceof Error
+          ? error.message
+          : "Impossible de charger les suggestions en attente.",
       );
     } finally {
       setIsLoading(false);
@@ -183,12 +187,14 @@ export function AdminSuggestionsManager() {
         language: generateState.language,
       });
       setSuccessMessage(
-        `Generation status: ${response.status}. generated=${response.generatedCount}, existing=${response.existingCount}`,
+        `Statut de génération : ${response.status}. générées=${response.generatedCount}, existantes=${response.existingCount}`,
       );
       await loadInitial();
     } catch (error) {
       setErrorMessage(
-        error instanceof Error ? error.message : "Unable to generate weekly suggestions.",
+        error instanceof Error
+          ? error.message
+          : "Impossible de générer les suggestions hebdomadaires.",
       );
     } finally {
       setIsMutating(false);
@@ -203,9 +209,11 @@ export function AdminSuggestionsManager() {
     try {
       await approveAiSuggestion(suggestionId);
       setPendingSuggestions((prev) => prev.filter((entry) => entry.id !== suggestionId));
-      setSuccessMessage(`Suggestion ${suggestionId} published.`);
+      setSuccessMessage(`Suggestion ${suggestionId} publiée.`);
     } catch (error) {
-      setErrorMessage(error instanceof Error ? error.message : "Unable to approve suggestion.");
+      setErrorMessage(
+        error instanceof Error ? error.message : "Impossible d'approuver la suggestion.",
+      );
     } finally {
       setIsMutating(false);
     }
@@ -219,9 +227,11 @@ export function AdminSuggestionsManager() {
     try {
       await deleteAiSuggestion(suggestionId);
       setPendingSuggestions((prev) => prev.filter((entry) => entry.id !== suggestionId));
-      setSuccessMessage(`Suggestion ${suggestionId} deleted.`);
+      setSuccessMessage(`Suggestion ${suggestionId} supprimée.`);
     } catch (error) {
-      setErrorMessage(error instanceof Error ? error.message : "Unable to delete suggestion.");
+      setErrorMessage(
+        error instanceof Error ? error.message : "Impossible de supprimer la suggestion.",
+      );
     } finally {
       setIsMutating(false);
     }
@@ -230,12 +240,12 @@ export function AdminSuggestionsManager() {
   return (
     <section className="space-y-6">
       <section className="space-y-4 rounded-2xl border bg-card p-5">
-        <h2 className="font-heading text-xl font-bold">Generate weekly suggestions</h2>
+        <h2 className="font-heading text-xl font-bold">Générer les suggestions hebdomadaires</h2>
 
         <div className="grid gap-4 md:grid-cols-3">
           <div className="space-y-2">
             <label htmlFor="desiredCount" className="block text-sm font-medium">
-              Desired count
+              Nombre souhaité
             </label>
             <input
               id="desiredCount"
@@ -251,7 +261,7 @@ export function AdminSuggestionsManager() {
           </div>
           <div className="space-y-2">
             <label htmlFor="language" className="block text-sm font-medium">
-              Language
+              Langue
             </label>
             <input
               id="language"
@@ -270,12 +280,12 @@ export function AdminSuggestionsManager() {
                 setGenerateState((prev) => ({ ...prev, force: event.target.checked }))
               }
             />
-            Force generation even if suggestions already exist
+            Forcer la génération même si des suggestions existent déjà
           </label>
         </div>
 
         <Button onClick={() => void onGenerate()} disabled={isMutating}>
-          {isMutating ? "Running..." : "Generate now"}
+          {isMutating ? "En cours..." : "Générer maintenant"}
         </Button>
       </section>
 
@@ -284,9 +294,9 @@ export function AdminSuggestionsManager() {
 
       <section className="space-y-4 rounded-2xl border bg-card p-5">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <h2 className="font-heading text-xl font-bold">Pending suggestions for moderation</h2>
+          <h2 className="font-heading text-xl font-bold">Suggestions en attente de modération</h2>
           <Button variant="outline" onClick={() => void loadInitial()} disabled={isLoading}>
-            Refresh
+            Actualiser
           </Button>
         </div>
 
@@ -304,7 +314,8 @@ export function AdminSuggestionsManager() {
 
         {pendingSuggestions.length === 0 && !isLoading ? (
           <p className="rounded-xl border bg-background p-4 text-sm text-muted-foreground">
-            No pending suggestions. Use generation to create a new review batch.
+            Aucune suggestion en attente. Utilisez la génération pour créer un nouveau lot à
+            examiner.
           </p>
         ) : null}
 
@@ -315,7 +326,11 @@ export function AdminSuggestionsManager() {
             disabled={isLoading || !nextCursor}
             className="min-w-40"
           >
-            {isLoading ? "Loading..." : nextCursor ? "Load more" : "No more pending"}
+            {isLoading
+              ? "Chargement..."
+              : nextCursor
+                ? "Charger plus"
+                : "Plus de suggestions en attente"}
           </Button>
         </div>
       </section>

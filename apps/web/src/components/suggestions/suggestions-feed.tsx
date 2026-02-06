@@ -64,13 +64,13 @@ function SuggestionCard({ suggestion }: { suggestion: SuggestionSummary }) {
 
       {activeFlags.length > 0 ? (
         <p className="mt-3 text-xs text-muted-foreground">
-          Diversity flags: {activeFlags.join(", ")}
+          Indicateurs de diversité : {activeFlags.join(", ")}
         </p>
       ) : null}
       <p className="mt-2 text-xs text-muted-foreground">
         {createdAt
-          ? `Published suggestion prepared on ${createdAt.toLocaleDateString()}`
-          : "Date unavailable"}
+          ? `Suggestion publiée préparée le ${createdAt.toLocaleDateString()}`
+          : "Date indisponible"}
       </p>
     </article>
   );
@@ -113,7 +113,9 @@ export function SuggestionsFeed() {
       setNextCursor(listed.nextCursor);
     } catch (error) {
       setErrorMessage(
-        error instanceof Error ? error.message : "Unable to load weekly suggestions.",
+        error instanceof Error
+          ? error.message
+          : "Impossible de charger les suggestions hebdomadaires.",
       );
     } finally {
       setIsLoading(false);
@@ -138,7 +140,9 @@ export function SuggestionsFeed() {
       setNextCursor(listed.nextCursor);
     } catch (error) {
       setErrorMessage(
-        error instanceof Error ? error.message : "Unable to load weekly suggestions.",
+        error instanceof Error
+          ? error.message
+          : "Impossible de charger les suggestions hebdomadaires.",
       );
     } finally {
       setIsLoading(false);
@@ -153,13 +157,13 @@ export function SuggestionsFeed() {
     <section className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border bg-card p-4">
         <div>
-          <p className="text-sm text-muted-foreground">Scope</p>
+          <p className="text-sm text-muted-foreground">Portée</p>
           <p className="font-medium">
-            {themeTitle ? `Current theme: ${themeTitle}` : "Latest published suggestions"}
+            {themeTitle ? `Thème actuel : ${themeTitle}` : "Dernières suggestions publiées"}
           </p>
         </div>
         <Button variant="outline" onClick={() => void loadInitial()} disabled={isLoading}>
-          Refresh
+          Actualiser
         </Button>
       </div>
 
@@ -173,7 +177,7 @@ export function SuggestionsFeed() {
 
       {suggestions.length === 0 && !isLoading ? (
         <p className="rounded-xl border bg-card p-4 text-sm text-muted-foreground">
-          No published suggestions available yet.
+          Aucune suggestion publiée disponible pour le moment.
         </p>
       ) : null}
 
@@ -184,7 +188,7 @@ export function SuggestionsFeed() {
           disabled={isLoading || !nextCursor}
           className="min-w-40"
         >
-          {isLoading ? "Loading..." : nextCursor ? "Load more" : "No more suggestions"}
+          {isLoading ? "Chargement..." : nextCursor ? "Charger plus" : "Plus de suggestions"}
         </Button>
       </div>
     </section>

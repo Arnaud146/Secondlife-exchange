@@ -68,7 +68,7 @@ export function ItemEditForm({ itemId }: { itemId: string }) {
         if (!mounted) {
           return;
         }
-        setErrorMessage(error instanceof Error ? error.message : "Unable to load item.");
+        setErrorMessage(error instanceof Error ? error.message : "Impossible de charger l'objet.");
       } finally {
         if (mounted) {
           setIsLoading(false);
@@ -113,11 +113,11 @@ export function ItemEditForm({ itemId }: { itemId: string }) {
       if (validatedFiles.length > 0) {
         const user = auth.currentUser;
         if (!user) {
-          throw new Error("Missing authenticated user for media upload.");
+          throw new Error("Utilisateur authentifié manquant pour l'import de médias.");
         }
 
         for (const [index, file] of validatedFiles.entries()) {
-          setUploadProgress(`Uploading image ${index + 1}/${validatedFiles.length}...`);
+          setUploadProgress(`Import de l'image ${index + 1}/${validatedFiles.length}...`);
 
           const type = itemImageMimeTypeSchema.parse(file.type);
           const storagePath = `items/${user.uid}/${itemId}/${crypto.randomUUID()}-${sanitizeFileName(file.name)}`;
@@ -140,7 +140,9 @@ export function ItemEditForm({ itemId }: { itemId: string }) {
       router.replace(`/items/${itemId}`);
       router.refresh();
     } catch (error) {
-      setErrorMessage(error instanceof Error ? error.message : "Unable to update item.");
+      setErrorMessage(
+        error instanceof Error ? error.message : "Impossible de mettre à jour l'objet.",
+      );
     } finally {
       setIsSubmitting(false);
       setUploadProgress(null);
@@ -148,7 +150,7 @@ export function ItemEditForm({ itemId }: { itemId: string }) {
   }
 
   async function onArchive() {
-    const shouldArchive = window.confirm("Archive this item?");
+    const shouldArchive = window.confirm("Archiver cet objet ?");
     if (!shouldArchive) {
       return;
     }
@@ -161,21 +163,21 @@ export function ItemEditForm({ itemId }: { itemId: string }) {
       router.replace("/items");
       router.refresh();
     } catch (error) {
-      setErrorMessage(error instanceof Error ? error.message : "Unable to archive item.");
+      setErrorMessage(error instanceof Error ? error.message : "Impossible d'archiver l'objet.");
     } finally {
       setIsSubmitting(false);
     }
   }
 
   if (isLoading) {
-    return <p className="text-sm text-muted-foreground">Loading item...</p>;
+    return <p className="text-sm text-muted-foreground">Chargement de l'objet...</p>;
   }
 
   return (
     <form onSubmit={onSubmit} className="space-y-5 rounded-2xl border bg-card p-6 shadow-sm">
       <div className="space-y-2">
         <label htmlFor="title" className="block text-sm font-medium">
-          Title
+          Titre
         </label>
         <input
           id="title"
@@ -205,7 +207,7 @@ export function ItemEditForm({ itemId }: { itemId: string }) {
       <div className="grid gap-4 md:grid-cols-2">
         <div className="space-y-2">
           <label htmlFor="category" className="block text-sm font-medium">
-            Category
+            Catégorie
           </label>
           <input
             id="category"
@@ -219,7 +221,7 @@ export function ItemEditForm({ itemId }: { itemId: string }) {
         </div>
         <div className="space-y-2">
           <label htmlFor="state" className="block text-sm font-medium">
-            Item state
+            État de l'objet
           </label>
           <select
             id="state"
@@ -243,7 +245,7 @@ export function ItemEditForm({ itemId }: { itemId: string }) {
 
       <div className="space-y-2">
         <label htmlFor="themeWeekId" className="block text-sm font-medium">
-          Theme week id (optional)
+          Id du thème de la semaine (optionnel)
         </label>
         <input
           id="themeWeekId"
@@ -257,7 +259,7 @@ export function ItemEditForm({ itemId }: { itemId: string }) {
 
       <div className="space-y-2">
         <label htmlFor="photos" className="block text-sm font-medium">
-          Add photos
+          Ajouter des photos
         </label>
         <input
           id="photos"
@@ -268,7 +270,7 @@ export function ItemEditForm({ itemId }: { itemId: string }) {
           className="block w-full text-sm"
         />
         <p className="text-xs text-muted-foreground">
-          Existing media: {existingMediaCount} | New files: {newFiles.length}
+          Médias existants : {existingMediaCount} | Nouveaux fichiers : {newFiles.length}
         </p>
       </div>
 
@@ -277,7 +279,7 @@ export function ItemEditForm({ itemId }: { itemId: string }) {
 
       <div className="flex flex-wrap gap-3">
         <Button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? "Saving..." : "Save changes"}
+          {isSubmitting ? "Enregistrement..." : "Enregistrer les modifications"}
         </Button>
         <Button
           type="button"
@@ -285,10 +287,10 @@ export function ItemEditForm({ itemId }: { itemId: string }) {
           onClick={() => router.push(`/items/${itemId}`)}
           disabled={isSubmitting}
         >
-          Cancel
+          Annuler
         </Button>
         <Button type="button" variant="destructive" onClick={onArchive} disabled={isSubmitting}>
-          Archive item
+          Archiver l'objet
         </Button>
       </div>
     </form>

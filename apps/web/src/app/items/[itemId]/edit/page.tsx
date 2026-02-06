@@ -16,7 +16,7 @@ export default async function EditItemPage({
     <main className="mx-auto w-full max-w-3xl space-y-6 px-6 py-12">
       <header className="flex flex-wrap items-center gap-3">
         <Button variant="outline" asChild>
-          <Link href={`/items/${itemId}`}>Back to item</Link>
+          <Link href={`/items/${itemId}`}>Retour à l'objet</Link>
         </Button>
       </header>
       <ItemEditForm itemId={itemId} />

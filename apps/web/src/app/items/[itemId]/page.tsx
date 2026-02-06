@@ -16,7 +16,7 @@ export default async function ItemDetailPage({
     <main className="mx-auto w-full max-w-6xl space-y-6 px-6 py-12">
       <header className="flex flex-wrap items-center gap-3">
         <Button variant="outline" asChild>
-          <Link href="/items">Back to items</Link>
+          <Link href="/items">Retour aux objets</Link>
         </Button>
       </header>
       <ItemDetailView itemId={itemId} />

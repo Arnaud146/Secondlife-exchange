@@ -26,7 +26,7 @@ export function SignOutButton() {
 
   return (
     <Button onClick={onSignOut} variant="outline" disabled={isPending}>
-      {isPending ? "Signing out..." : "Sign out"}
+      {isPending ? "Déconnexion..." : "Se déconnecter"}
     </Button>
   );
 }

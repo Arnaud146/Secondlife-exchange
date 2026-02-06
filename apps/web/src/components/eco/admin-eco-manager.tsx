@@ -52,7 +52,7 @@ function toDateSafe(value: unknown): Date | null {
 
 function formatDate(value: unknown) {
   const date = toDateSafe(value);
-  return date ? date.toLocaleString() : "Unknown";
+  return date ? date.toLocaleString() : "Inconnu";
 }
 
 export function AdminEcoManager() {
@@ -106,7 +106,9 @@ export function AdminEcoManager() {
       setEcoContents(response.ecoContents);
       setNextCursor(response.nextCursor);
     } catch (error) {
-      setErrorMessage(error instanceof Error ? error.message : "Unable to load eco contents.");
+      setErrorMessage(
+        error instanceof Error ? error.message : "Impossible de charger les contenus éco.",
+      );
     } finally {
       setIsLoading(false);
     }
@@ -128,7 +130,9 @@ export function AdminEcoManager() {
       setEcoContents((prev) => [...prev, ...response.ecoContents]);
       setNextCursor(response.nextCursor);
     } catch (error) {
-      setErrorMessage(error instanceof Error ? error.message : "Unable to load eco contents.");
+      setErrorMessage(
+        error instanceof Error ? error.message : "Impossible de charger les contenus éco.",
+      );
     } finally {
       setIsLoading(false);
     }
@@ -164,7 +168,7 @@ export function AdminEcoManager() {
       };
 
       const response = await adminCreateEcoContent(payload);
-      setSuccessMessage(`Eco content created: ${response.contentId}`);
+      setSuccessMessage(`Contenu éco créé : ${response.contentId}`);
       setFormState((prev) => ({
         ...prev,
         title: "",
@@ -174,7 +178,9 @@ export function AdminEcoManager() {
       }));
       await loadInitial();
     } catch (error) {
-      setErrorMessage(error instanceof Error ? error.message : "Unable to create eco content.");
+      setErrorMessage(
+        error instanceof Error ? error.message : "Impossible de créer le contenu éco.",
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -183,7 +189,7 @@ export function AdminEcoManager() {
   return (
     <section className="space-y-6">
       <section className="space-y-4 rounded-2xl border bg-card p-5">
-        <h2 className="font-heading text-xl font-bold">Create eco content</h2>
+        <h2 className="font-heading text-xl font-bold">Créer du contenu éco</h2>
 
         <div className="grid gap-4 md:grid-cols-2">
           <div className="space-y-2">
@@ -202,14 +208,14 @@ export function AdminEcoManager() {
               className="h-10 w-full rounded-md border bg-background px-3 text-sm"
             >
               <option value="article">Article</option>
-              <option value="video">Video</option>
-              <option value="stat">Stat</option>
+              <option value="video">Vidéo</option>
+              <option value="stat">Statistique</option>
             </select>
           </div>
 
           <div className="space-y-2">
             <label htmlFor="ecoThemeWeek" className="text-sm font-medium">
-              Theme week
+              Thème de la semaine
             </label>
             <select
               id="ecoThemeWeek"
@@ -219,7 +225,7 @@ export function AdminEcoManager() {
               }
               className="h-10 w-full rounded-md border bg-background px-3 text-sm"
             >
-              <option value="">None</option>
+              <option value="">Aucun</option>
               {themeOptions.map((theme) => (
                 <option key={theme.id} value={theme.id}>
                   {theme.title}
@@ -231,7 +237,7 @@ export function AdminEcoManager() {
 
         <div className="space-y-2">
           <label htmlFor="ecoTitle" className="text-sm font-medium">
-            Title
+            Titre
           </label>
           <input
             id="ecoTitle"
@@ -243,7 +249,7 @@ export function AdminEcoManager() {
 
         <div className="space-y-2">
           <label htmlFor="ecoSummary" className="text-sm font-medium">
-            Summary
+            Résumé
           </label>
           <textarea
             id="ecoSummary"
@@ -257,7 +263,7 @@ export function AdminEcoManager() {
         <div className="grid gap-4 md:grid-cols-2">
           <div className="space-y-2">
             <label htmlFor="ecoSourceUrl" className="text-sm font-medium">
-              Source URL
+              URL de la source
             </label>
             <input
               id="ecoSourceUrl"
@@ -272,7 +278,7 @@ export function AdminEcoManager() {
 
           <div className="space-y-2">
             <label htmlFor="ecoTags" className="text-sm font-medium">
-              Tags (comma-separated)
+              Tags (séparés par des virgules)
             </label>
             <input
               id="ecoTags"
@@ -281,7 +287,7 @@ export function AdminEcoManager() {
                 setFormState((prev) => ({ ...prev, tagsRaw: event.target.value }))
               }
               className="h-10 w-full rounded-md border bg-background px-3 text-sm"
-              placeholder="repair, reuse"
+              placeholder="réparation, réutilisation"
             />
           </div>
         </div>
@@ -289,7 +295,7 @@ export function AdminEcoManager() {
         <div className="grid gap-4 md:grid-cols-2">
           <div className="space-y-2">
             <label htmlFor="ecoLang" className="text-sm font-medium">
-              Language
+              Langue
             </label>
             <input
               id="ecoLang"
@@ -302,7 +308,7 @@ export function AdminEcoManager() {
 
           <div className="space-y-2">
             <label htmlFor="ecoPublishedAt" className="text-sm font-medium">
-              Published at (optional)
+              Date de publication (optionnel)
             </label>
             <input
               id="ecoPublishedAt"
@@ -320,15 +326,15 @@ export function AdminEcoManager() {
         {successMessage ? <p className="text-sm text-primary">{successMessage}</p> : null}
 
         <Button onClick={() => void onCreate()} disabled={isSubmitting}>
-          {isSubmitting ? "Creating..." : "Create eco content"}
+          {isSubmitting ? "Création..." : "Créer le contenu éco"}
         </Button>
       </section>
 
       <section className="space-y-4 rounded-2xl border bg-card p-5">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <h2 className="font-heading text-xl font-bold">Recent eco contents</h2>
+          <h2 className="font-heading text-xl font-bold">Contenus éco récents</h2>
           <Button variant="outline" onClick={() => void loadInitial()} disabled={isLoading}>
-            Refresh
+            Actualiser
           </Button>
         </div>
 
@@ -343,7 +349,7 @@ export function AdminEcoManager() {
               </div>
               <p className="mt-2 text-sm text-muted-foreground">{content.summary}</p>
               <p className="mt-2 text-xs text-muted-foreground">
-                Published: {formatDate(content.publishedAt)} | Created:{" "}
+                Publié le : {formatDate(content.publishedAt)} | Créé le :{" "}
                 {formatDate(content.createdAt)}
               </p>
             </article>
@@ -352,7 +358,7 @@ export function AdminEcoManager() {
 
         {ecoContents.length === 0 && !isLoading ? (
           <p className="rounded-xl border bg-background p-4 text-sm text-muted-foreground">
-            No eco content entries found.
+            Aucun contenu éco trouvé.
           </p>
         ) : null}
 
@@ -363,7 +369,7 @@ export function AdminEcoManager() {
             disabled={isLoading || !nextCursor}
             className="min-w-40"
           >
-            {isLoading ? "Loading..." : nextCursor ? "Load more" : "No more entries"}
+            {isLoading ? "Chargement..." : nextCursor ? "Charger plus" : "Plus d'entrées"}
           </Button>
         </div>
       </section>

@@ -33,7 +33,7 @@ function formatRange(theme: ThemeWeekSummary) {
   const end = toDateSafe(theme.weekEnd);
 
   if (!start || !end) {
-    return "Unknown range";
+    return "Période inconnue";
   }
 
   return `${start.toLocaleDateString()} - ${end.toLocaleDateString()}`;
@@ -81,7 +81,7 @@ export function ThemeExplorer() {
       setThemes(listed.themeWeeks);
       setNextCursor(listed.nextCursor);
     } catch (error) {
-      setErrorMessage(error instanceof Error ? error.message : "Unable to load themes.");
+      setErrorMessage(error instanceof Error ? error.message : "Impossible de charger les thèmes.");
     } finally {
       setIsLoading(false);
     }
@@ -104,7 +104,7 @@ export function ThemeExplorer() {
       setThemes((prev) => [...prev, ...listed.themeWeeks]);
       setNextCursor(listed.nextCursor);
     } catch (error) {
-      setErrorMessage(error instanceof Error ? error.message : "Unable to load themes.");
+      setErrorMessage(error instanceof Error ? error.message : "Impossible de charger les thèmes.");
     } finally {
       setIsLoading(false);
     }
@@ -120,9 +120,9 @@ export function ThemeExplorer() {
 
       <section className="space-y-3">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <h2 className="font-heading text-2xl font-bold">Current theme</h2>
+          <h2 className="font-heading text-2xl font-bold">Thème actuel</h2>
           <Button variant="outline" onClick={() => void loadInitial()} disabled={isLoading}>
-            Refresh
+            Actualiser
           </Button>
         </div>
 
@@ -130,13 +130,13 @@ export function ThemeExplorer() {
           <ThemeCard theme={currentTheme} highlight />
         ) : (
           <p className="rounded-xl border bg-card p-4 text-sm text-muted-foreground">
-            No active theme week currently.
+            Aucun thème de la semaine actif actuellement.
           </p>
         )}
       </section>
 
       <section className="space-y-3">
-        <h2 className="font-heading text-2xl font-bold">Theme archive</h2>
+        <h2 className="font-heading text-2xl font-bold">Archives des thèmes</h2>
         <div className="grid gap-4 md:grid-cols-2">
           {themes.map((theme) => (
             <ThemeCard key={theme.id} theme={theme} />
@@ -145,7 +145,7 @@ export function ThemeExplorer() {
 
         {themes.length === 0 && !isLoading ? (
           <p className="rounded-xl border bg-card p-4 text-sm text-muted-foreground">
-            No theme weeks available yet.
+            Aucun thème hebdomadaire disponible pour le moment.
           </p>
         ) : null}
 
@@ -156,7 +156,7 @@ export function ThemeExplorer() {
             disabled={isLoading || !nextCursor}
             className="min-w-40"
           >
-            {isLoading ? "Loading..." : nextCursor ? "Load more" : "No more themes"}
+            {isLoading ? "Chargement..." : nextCursor ? "Charger plus" : "Plus de thèmes"}
           </Button>
         </div>
       </section>

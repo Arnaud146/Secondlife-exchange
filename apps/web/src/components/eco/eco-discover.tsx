@@ -45,7 +45,7 @@ function toDateSafe(value: unknown): Date | null {
 
 function summarizeDate(value: unknown): string {
   const date = toDateSafe(value);
-  return date ? date.toLocaleDateString() : "Unknown date";
+  return date ? date.toLocaleDateString() : "Date inconnue";
 }
 
 function EcoContentCard({ content }: { content: EcoContentSummary }) {
@@ -75,7 +75,7 @@ function EcoContentCard({ content }: { content: EcoContentSummary }) {
       <div className="flex items-center justify-between pt-1">
         <span className="text-xs text-muted-foreground">{content.lang.toUpperCase()}</span>
         <Button variant="outline" asChild>
-          <Link href={`/eco-discover/${content.id}`}>Read detail</Link>
+          <Link href={`/eco-discover/${content.id}`}>Lire le détail</Link>
         </Button>
       </div>
     </article>
@@ -143,7 +143,9 @@ export function EcoDiscover() {
       setEcoContents(listed.ecoContents);
       setNextCursor(listed.nextCursor);
     } catch (error) {
-      setErrorMessage(error instanceof Error ? error.message : "Unable to load eco discovery.");
+      setErrorMessage(
+        error instanceof Error ? error.message : "Impossible de charger la découverte éco.",
+      );
     } finally {
       setIsLoading(false);
     }
@@ -166,7 +168,9 @@ export function EcoDiscover() {
       setEcoContents((prev) => [...prev, ...listed.ecoContents]);
       setNextCursor(listed.nextCursor);
     } catch (error) {
-      setErrorMessage(error instanceof Error ? error.message : "Unable to load eco discovery.");
+      setErrorMessage(
+        error instanceof Error ? error.message : "Impossible de charger la découverte éco.",
+      );
     } finally {
       setIsLoading(false);
     }
@@ -183,7 +187,7 @@ export function EcoDiscover() {
   return (
     <section className="space-y-6">
       <section className="space-y-4 rounded-2xl border bg-card p-5">
-        <h2 className="font-heading text-xl font-bold">Filters</h2>
+        <h2 className="font-heading text-xl font-bold">Filtres</h2>
         <div className="grid gap-4 md:grid-cols-4">
           <div className="space-y-2">
             <label htmlFor="ecoType" className="text-sm font-medium">
@@ -200,10 +204,10 @@ export function EcoDiscover() {
               }
               className="h-10 w-full rounded-md border bg-background px-3 text-sm"
             >
-              <option value="all">All</option>
+              <option value="all">Tous</option>
               <option value="article">Article</option>
-              <option value="video">Video</option>
-              <option value="stat">Stat</option>
+              <option value="video">Vidéo</option>
+              <option value="stat">Statistique</option>
             </select>
           </div>
 
@@ -216,13 +220,13 @@ export function EcoDiscover() {
               value={filters.tag}
               onChange={(event) => setFilters((prev) => ({ ...prev, tag: event.target.value }))}
               className="h-10 w-full rounded-md border bg-background px-3 text-sm"
-              placeholder="repair"
+              placeholder="réparation"
             />
           </div>
 
           <div className="space-y-2">
             <label htmlFor="ecoTheme" className="text-sm font-medium">
-              Theme
+              Thème
             </label>
             <select
               id="ecoTheme"
@@ -232,7 +236,7 @@ export function EcoDiscover() {
               }
               className="h-10 w-full rounded-md border bg-background px-3 text-sm"
             >
-              <option value="">All themes</option>
+              <option value="">Tous les thèmes</option>
               {themeOptions.map((theme) => (
                 <option key={theme.id} value={theme.id}>
                   {theme.title}
@@ -243,7 +247,7 @@ export function EcoDiscover() {
 
           <div className="space-y-2">
             <label htmlFor="ecoLang" className="text-sm font-medium">
-              Language
+              Langue
             </label>
             <input
               id="ecoLang"
@@ -257,7 +261,7 @@ export function EcoDiscover() {
 
         <div className="flex flex-wrap gap-2">
           <Button variant="outline" onClick={() => void loadInitial()} disabled={isLoading}>
-            Apply filters
+            Appliquer les filtres
           </Button>
           <Button
             variant="secondary"
@@ -271,7 +275,7 @@ export function EcoDiscover() {
             }}
             disabled={isLoading}
           >
-            Reset
+            Réinitialiser
           </Button>
         </div>
       </section>
@@ -286,7 +290,7 @@ export function EcoDiscover() {
 
       {ecoContents.length === 0 && !isLoading ? (
         <p className="rounded-xl border bg-card p-4 text-sm text-muted-foreground">
-          No eco discovery content available for these filters.
+          Aucun contenu éco disponible pour ces filtres.
         </p>
       ) : null}
 
@@ -297,7 +301,7 @@ export function EcoDiscover() {
           disabled={isLoading || !nextCursor}
           className="min-w-40"
         >
-          {isLoading ? "Loading..." : nextCursor ? "Load more" : "No more results"}
+          {isLoading ? "Chargement..." : nextCursor ? "Charger plus" : "Plus de résultats"}
         </Button>
       </div>
     </section>

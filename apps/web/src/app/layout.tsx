@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Nunito, Space_Grotesk } from "next/font/google";
 
+import { NavbarServer } from "@/components/layout/navbar-server";
 import { SwRegister } from "@/components/pwa/sw-register";
 
 import "./globals.css";
@@ -17,7 +18,8 @@ const spaceGrotesk = Space_Grotesk({
 
 export const metadata: Metadata = {
   title: "SecondLife Exchange",
-  description: "Cash-free second-hand exchange platform with weekly themes.",
+  description:
+    "Plateforme d'échange d'objets de seconde main sans argent avec des thèmes hebdomadaires.",
   manifest: "/manifest.webmanifest",
   appleWebApp: {
     capable: true,
@@ -36,9 +38,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="fr">
       <body className={`${nunito.variable} ${spaceGrotesk.variable} antialiased`}>
         <SwRegister />
+        <NavbarServer />
         {children}
       </body>
     </html>

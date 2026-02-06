@@ -24,7 +24,7 @@ function formatDate(value: unknown) {
     }
   }
 
-  return "Unknown";
+  return "Inconnu";
 }
 
 export function ItemDetailView({ itemId }: { itemId: string }) {
@@ -56,7 +56,7 @@ export function ItemDetailView({ itemId }: { itemId: string }) {
         if (!isMounted) {
           return;
         }
-        setErrorMessage(error instanceof Error ? error.message : "Unable to load item.");
+        setErrorMessage(error instanceof Error ? error.message : "Impossible de charger l'objet.");
       } finally {
         if (isMounted) {
           setIsLoading(false);
@@ -72,11 +72,11 @@ export function ItemDetailView({ itemId }: { itemId: string }) {
   }, [itemId]);
 
   if (isLoading) {
-    return <p className="text-sm text-muted-foreground">Loading item...</p>;
+    return <p className="text-sm text-muted-foreground">Chargement de l'objet...</p>;
   }
 
   if (errorMessage || !detail) {
-    return <p className="text-sm text-destructive">{errorMessage ?? "Item not found."}</p>;
+    return <p className="text-sm text-destructive">{errorMessage ?? "Objet introuvable."}</p>;
   }
 
   const canEdit = viewerUid === detail.item.ownerId;
@@ -90,43 +90,43 @@ export function ItemDetailView({ itemId }: { itemId: string }) {
         </div>
         {canEdit ? (
           <Button asChild>
-            <Link href={`/items/${detail.item.id}/edit`}>Edit item</Link>
+            <Link href={`/items/${detail.item.id}/edit`}>Modifier l'objet</Link>
           </Button>
         ) : null}
       </header>
 
       <section className="grid gap-4 rounded-2xl border bg-card p-5 md:grid-cols-2">
         <article>
-          <h2 className="font-heading text-lg font-bold">Details</h2>
+          <h2 className="font-heading text-lg font-bold">Détails</h2>
           <dl className="mt-3 space-y-1 text-sm">
             <div>
-              <dt className="inline font-semibold">Category:</dt>{" "}
+              <dt className="inline font-semibold">Catégorie :</dt>{" "}
               <dd className="inline">{detail.item.category}</dd>
             </div>
             <div>
-              <dt className="inline font-semibold">State:</dt>{" "}
+              <dt className="inline font-semibold">État :</dt>{" "}
               <dd className="inline">{detail.item.state}</dd>
             </div>
             <div>
-              <dt className="inline font-semibold">Status:</dt>{" "}
+              <dt className="inline font-semibold">Statut :</dt>{" "}
               <dd className="inline">{detail.item.status}</dd>
             </div>
             <div>
-              <dt className="inline font-semibold">Owner:</dt>{" "}
+              <dt className="inline font-semibold">Propriétaire :</dt>{" "}
               <dd className="inline">{detail.item.ownerId}</dd>
             </div>
             <div>
-              <dt className="inline font-semibold">Created:</dt>{" "}
+              <dt className="inline font-semibold">Créé le :</dt>{" "}
               <dd className="inline">{formatDate(detail.item.createdAt)}</dd>
             </div>
             <div>
-              <dt className="inline font-semibold">Updated:</dt>{" "}
+              <dt className="inline font-semibold">Mis à jour le :</dt>{" "}
               <dd className="inline">{formatDate(detail.item.updatedAt)}</dd>
             </div>
           </dl>
         </article>
         <article>
-          <h2 className="font-heading text-lg font-bold">Media</h2>
+          <h2 className="font-heading text-lg font-bold">Médias</h2>
           <p className="mt-3 text-sm text-muted-foreground">{detail.media.length} image(s)</p>
         </article>
       </section>
@@ -135,7 +135,7 @@ export function ItemDetailView({ itemId }: { itemId: string }) {
         <h2 className="font-heading mb-3 text-xl font-bold">Photos</h2>
         {detail.media.length === 0 ? (
           <p className="rounded-xl border bg-card p-4 text-sm text-muted-foreground">
-            No photos uploaded yet.
+            Aucune photo importée pour le moment.
           </p>
         ) : (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

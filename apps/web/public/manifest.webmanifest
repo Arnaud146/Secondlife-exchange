@@ -1,12 +1,12 @@
 {
   "name": "SecondLife Exchange",
   "short_name": "SecondLife",
-  "description": "Cash-free second-hand exchange app with weekly themes.",
+  "description": "Application d'échange d'objets de seconde main sans argent avec des thèmes hebdomadaires.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#f6f2ea",
   "theme_color": "#1f5a45",
-  "lang": "en",
+  "lang": "fr",
   "icons": [
     {
       "src": "/icons/icon-192.svg",

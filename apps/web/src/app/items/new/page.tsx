@@ -11,13 +11,13 @@ export default async function NewItemPage() {
     <main className="mx-auto w-full max-w-3xl space-y-6 px-6 py-12">
       <header className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="font-heading text-3xl font-bold">Create item</h1>
+          <h1 className="font-heading text-3xl font-bold">Créer un objet</h1>
           <p className="mt-2 text-sm text-muted-foreground">
-            Publish an item and upload photos to Storage.
+            Publiez un objet et importez des photos dans le stockage.
           </p>
         </div>
         <Button variant="outline" asChild>
-          <Link href="/items">Back to items</Link>
+          <Link href="/items">Retour aux objets</Link>
         </Button>
       </header>
       <ItemCreateForm />

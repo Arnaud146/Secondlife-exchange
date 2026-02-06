@@ -61,11 +61,11 @@ export function ItemCreateForm() {
       if (validatedFiles.length > 0) {
         const user = auth.currentUser;
         if (!user) {
-          throw new Error("Missing authenticated user for media upload.");
+          throw new Error("Utilisateur authentifié manquant pour l'import de médias.");
         }
 
         for (const [index, file] of validatedFiles.entries()) {
-          setUploadProgress(`Uploading image ${index + 1}/${validatedFiles.length}...`);
+          setUploadProgress(`Import de l'image ${index + 1}/${validatedFiles.length}...`);
 
           const type = itemImageMimeTypeSchema.parse(file.type);
           const storagePath = `items/${user.uid}/${itemId}/${crypto.randomUUID()}-${sanitizeFileName(file.name)}`;
@@ -88,7 +88,7 @@ export function ItemCreateForm() {
       router.replace(`/items/${itemId}`);
       router.refresh();
     } catch (error) {
-      setErrorMessage(error instanceof Error ? error.message : "Unable to create item.");
+      setErrorMessage(error instanceof Error ? error.message : "Impossible de créer l'objet.");
     } finally {
       setIsSubmitting(false);
       setUploadProgress(null);
@@ -99,7 +99,7 @@ export function ItemCreateForm() {
     <form onSubmit={onSubmit} className="space-y-5 rounded-2xl border bg-card p-6 shadow-sm">
       <div className="space-y-2">
         <label htmlFor="title" className="block text-sm font-medium">
-          Title
+          Titre
         </label>
         <input
           id="title"
@@ -129,7 +129,7 @@ export function ItemCreateForm() {
       <div className="grid gap-4 md:grid-cols-2">
         <div className="space-y-2">
           <label htmlFor="category" className="block text-sm font-medium">
-            Category
+            Catégorie
           </label>
           <input
             id="category"
@@ -143,7 +143,7 @@ export function ItemCreateForm() {
         </div>
         <div className="space-y-2">
           <label htmlFor="state" className="block text-sm font-medium">
-            Item state
+            État de l'objet
           </label>
           <select
             id="state"
@@ -167,7 +167,7 @@ export function ItemCreateForm() {
 
       <div className="space-y-2">
         <label htmlFor="themeWeekId" className="block text-sm font-medium">
-          Theme week id (optional)
+          Id du thème de la semaine (optionnel)
         </label>
         <input
           id="themeWeekId"
@@ -191,14 +191,14 @@ export function ItemCreateForm() {
           onChange={(event) => setFiles(Array.from(event.target.files ?? []))}
           className="block w-full text-sm"
         />
-        <p className="text-xs text-muted-foreground">{files.length} file(s) selected.</p>
+        <p className="text-xs text-muted-foreground">{files.length} fichier(s) sélectionné(s).</p>
       </div>
 
       {errorMessage ? <p className="text-sm text-destructive">{errorMessage}</p> : null}
       {uploadProgress ? <p className="text-sm text-muted-foreground">{uploadProgress}</p> : null}
 
       <Button type="submit" disabled={isSubmitting}>
-        {isSubmitting ? "Creating..." : "Create item"}
+        {isSubmitting ? "Création..." : "Créer l'objet"}
       </Button>
     </form>
   );

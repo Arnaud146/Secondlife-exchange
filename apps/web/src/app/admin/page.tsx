@@ -7,42 +7,45 @@ export default async function AdminPage() {
 
   return (
     <main className="mx-auto w-full max-w-5xl space-y-4 px-6 py-12">
-      <h1 className="font-heading text-3xl font-bold">Admin panel</h1>
-      <p className="text-muted-foreground">RBAC check passed for {session.email ?? session.uid}.</p>
+      <h1 className="font-heading text-3xl font-bold">Panneau d'administration</h1>
+      <p className="text-muted-foreground">
+        Vérification RBAC réussie pour {session.email ?? session.uid}.
+      </p>
       <section className="rounded-xl border bg-card p-5">
-        <h2 className="font-heading text-lg font-bold">Theme administration</h2>
+        <h2 className="font-heading text-lg font-bold">Administration des thèmes</h2>
         <p className="mt-2 text-sm text-muted-foreground">
-          Plan weekly themes and manage the current editorial calendar.
+          Planifiez les thèmes hebdomadaires et gérez le calendrier éditorial.
         </p>
         <Link
           href="/admin/themes"
           className="mt-3 inline-block text-sm font-semibold text-primary hover:underline"
         >
-          Open theme manager
+          Ouvrir le gestionnaire de thèmes
         </Link>
       </section>
       <section className="rounded-xl border bg-card p-5">
-        <h2 className="font-heading text-lg font-bold">AI suggestions moderation</h2>
+        <h2 className="font-heading text-lg font-bold">Modération des suggestions IA</h2>
         <p className="mt-2 text-sm text-muted-foreground">
-          Generate weekly suggestion batches and approve or reject unpublished entries.
+          Générez des lots de suggestions hebdomadaires et approuvez ou rejetez les entrées non
+          publiées.
         </p>
         <Link
           href="/admin/suggestions"
           className="mt-3 inline-block text-sm font-semibold text-primary hover:underline"
         >
-          Open suggestions manager
+          Ouvrir le gestionnaire de suggestions
         </Link>
       </section>
       <section className="rounded-xl border bg-card p-5">
-        <h2 className="font-heading text-lg font-bold">Eco content management</h2>
+        <h2 className="font-heading text-lg font-bold">Gestion du contenu éco</h2>
         <p className="mt-2 text-sm text-muted-foreground">
-          Create articles, videos, and stats for the eco discovery experience.
+          Créez des articles, vidéos et statistiques pour l'expérience de découverte éco.
         </p>
         <Link
           href="/admin/eco-contents"
           className="mt-3 inline-block text-sm font-semibold text-primary hover:underline"
         >
-          Open eco manager
+          Ouvrir le gestionnaire éco
         </Link>
       </section>
     </main>

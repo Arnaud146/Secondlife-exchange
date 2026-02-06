@@ -41,7 +41,7 @@ function formatRange(theme: ThemeWeekSummary) {
   const end = toDateSafe(theme.weekEnd);
 
   if (!start || !end) {
-    return "Unknown range";
+    return "Période inconnue";
   }
 
   return `${start.toLocaleString()} -> ${end.toLocaleString()}`;
@@ -84,7 +84,7 @@ export function AdminThemeManager() {
       setThemes(response.themeWeeks);
       setNextCursor(response.nextCursor);
     } catch (error) {
-      setErrorMessage(error instanceof Error ? error.message : "Unable to load theme weeks.");
+      setErrorMessage(error instanceof Error ? error.message : "Impossible de charger les thèmes.");
     } finally {
       setIsLoading(false);
     }
@@ -107,7 +107,7 @@ export function AdminThemeManager() {
       setThemes((prev) => [...prev, ...response.themeWeeks]);
       setNextCursor(response.nextCursor);
     } catch (error) {
-      setErrorMessage(error instanceof Error ? error.message : "Unable to load theme weeks.");
+      setErrorMessage(error instanceof Error ? error.message : "Impossible de charger les thèmes.");
     } finally {
       setIsLoading(false);
     }
@@ -135,7 +135,7 @@ export function AdminThemeManager() {
       };
 
       const result = await createThemeWeek(payload);
-      setSuccessMessage(`Theme week created: ${result.themeWeekId}`);
+      setSuccessMessage(`Thème créé : ${result.themeWeekId}`);
 
       setFormState((prev) => ({
         ...prev,
@@ -146,7 +146,7 @@ export function AdminThemeManager() {
 
       await loadInitialThemes();
     } catch (error) {
-      setErrorMessage(error instanceof Error ? error.message : "Unable to create theme week.");
+      setErrorMessage(error instanceof Error ? error.message : "Impossible de créer le thème.");
     } finally {
       setIsSubmitting(false);
     }
@@ -155,12 +155,12 @@ export function AdminThemeManager() {
   return (
     <section className="space-y-6">
       <section className="space-y-4 rounded-2xl border bg-card p-5">
-        <h2 className="font-heading text-xl font-bold">Create / schedule theme week</h2>
+        <h2 className="font-heading text-xl font-bold">Créer / planifier un thème</h2>
 
         <div className="grid gap-4 md:grid-cols-2">
           <div className="space-y-2">
             <label htmlFor="themeTitle" className="block text-sm font-medium">
-              Title
+              Titre
             </label>
             <input
               id="themeTitle"
@@ -171,7 +171,7 @@ export function AdminThemeManager() {
           </div>
           <div className="space-y-2">
             <label htmlFor="themeSlug" className="block text-sm font-medium">
-              Slug (lowercase with hyphens)
+              Slug (minuscules avec tirets)
             </label>
             <input
               id="themeSlug"
@@ -184,7 +184,7 @@ export function AdminThemeManager() {
           </div>
           <div className="space-y-2">
             <label htmlFor="weekStartLocal" className="block text-sm font-medium">
-              Week start
+              Début de la semaine
             </label>
             <input
               id="weekStartLocal"
@@ -198,7 +198,7 @@ export function AdminThemeManager() {
           </div>
           <div className="space-y-2">
             <label htmlFor="weekEndLocal" className="block text-sm font-medium">
-              Week end
+              Fin de la semaine
             </label>
             <input
               id="weekEndLocal"
@@ -214,7 +214,7 @@ export function AdminThemeManager() {
 
         <div className="space-y-2">
           <label htmlFor="ecoImpactSummary" className="block text-sm font-medium">
-            Eco impact summary
+            Résumé de l'impact écologique
           </label>
           <textarea
             id="ecoImpactSummary"
@@ -231,15 +231,15 @@ export function AdminThemeManager() {
         {successMessage ? <p className="text-sm text-primary">{successMessage}</p> : null}
 
         <Button onClick={() => void onCreateTheme()} disabled={isSubmitting}>
-          {isSubmitting ? "Creating..." : "Create theme week"}
+          {isSubmitting ? "Création..." : "Créer le thème"}
         </Button>
       </section>
 
       <section className="space-y-4 rounded-2xl border bg-card p-5">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <h2 className="font-heading text-xl font-bold">Scheduled and past themes</h2>
+          <h2 className="font-heading text-xl font-bold">Thèmes planifiés et passés</h2>
           <Button variant="outline" onClick={() => void loadInitialThemes()} disabled={isLoading}>
-            Refresh
+            Actualiser
           </Button>
         </div>
 
@@ -259,7 +259,7 @@ export function AdminThemeManager() {
         </div>
 
         {themes.length === 0 && !isLoading ? (
-          <p className="text-sm text-muted-foreground">No theme weeks found.</p>
+          <p className="text-sm text-muted-foreground">Aucun thème trouvé.</p>
         ) : null}
 
         <div className="flex justify-center">
@@ -269,7 +269,7 @@ export function AdminThemeManager() {
             disabled={isLoading || !nextCursor}
             className="min-w-40"
           >
-            {isLoading ? "Loading..." : nextCursor ? "Load more" : "No more themes"}
+            {isLoading ? "Chargement..." : nextCursor ? "Charger plus" : "Plus de thèmes"}
           </Button>
         </div>
       </section>

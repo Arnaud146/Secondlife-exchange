@@ -16,7 +16,7 @@ export default async function EcoContentPage({
     <main className="mx-auto w-full max-w-5xl space-y-6 px-6 py-12">
       <header>
         <Button variant="outline" asChild>
-          <Link href="/eco-discover">Back to eco discovery</Link>
+          <Link href="/eco-discover">Retour à la découverte éco</Link>
         </Button>
       </header>
       <EcoContentDetail contentId={contentId} />
