@@ -4,7 +4,7 @@ const envSchema = z.object({
   PROJECT_ID: z.string().min(1).default("secondlife-exchange-dev"),
   AI_PROVIDER: z.enum(["gemini", "openai"]).default("gemini"),
   GEMINI_API_KEY: z.string().optional(),
-  GEMINI_MODEL: z.string().default("gemini-1.5-flash"),
+  GEMINI_MODEL: z.string().default("gemini-2.0-flash"),
   OPENAI_API_KEY: z.string().optional(),
   OPENAI_MODEL: z.string().default("gpt-4o-mini"),
   RATE_LIMIT_WINDOW_MS: z.coerce.number().int().positive().default(60_000),
