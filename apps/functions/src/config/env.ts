@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 const envSchema = z.object({
-  FIREBASE_PROJECT_ID: z.string().min(1).default("secondlife-exchange-dev"),
+  PROJECT_ID: z.string().min(1).default("secondlife-exchange-dev"),
   AI_PROVIDER: z.enum(["gemini", "openai"]).default("gemini"),
   GEMINI_API_KEY: z.string().optional(),
   GEMINI_MODEL: z.string().default("gemini-1.5-flash"),

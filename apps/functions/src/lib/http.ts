@@ -25,7 +25,19 @@ export function withCors(handler: HttpHandler): HttpHandler {
       return;
     }
 
-    await handler(req, res);
+    try {
+      await handler(req, res);
+    } catch (error) {
+      // Safety net: if the handler throws an unhandled error, we still return
+      // a proper JSON response with CORS headers already set above, instead
+      // of letting the Cloud Functions runtime send a raw 500 without them.
+      if (!res.headersSent) {
+        res.status(500).json({
+          success: false,
+          error: { message: "Internal server error." },
+        });
+      }
+    }
   };
 }
 
