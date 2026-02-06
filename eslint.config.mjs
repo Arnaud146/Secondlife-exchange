@@ -5,7 +5,13 @@ import securityPlugin from "eslint-plugin-security";
 
 export default [
   {
-    ignores: ["**/node_modules/**", "**/.next/**", "**/dist/**", "**/lib/**", "**/.firebase/**"],
+    ignores: [
+      "**/node_modules/**",
+      "**/.next/**",
+      "**/dist/**",
+      "apps/functions/lib/**",
+      "**/.firebase/**",
+    ],
   },
   {
     files: ["**/*.{ts,tsx,js,jsx,mjs,cjs}"],

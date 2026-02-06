@@ -1,5 +1,38 @@
 import type { NextConfig } from "next";
 
+const isDev = process.env.NODE_ENV !== "production";
+
+/* ---------- CSP sources (env-aware) ---------- */
+
+const imgSources = [
+  "'self'",
+  "data:",
+  "https://firebasestorage.googleapis.com",
+  "https://*.firebasestorage.app",
+  ...(isDev ? ["http://127.0.0.1:9199", "http://localhost:9199"] : []),
+];
+
+const connectSources = [
+  "'self'",
+  "https://*.googleapis.com",
+  "https://*.firebaseio.com",
+  "https://*.firebaseapp.com",
+  "https://*.cloudfunctions.net",
+  "https://*.firebasestorage.app",
+  ...(isDev
+    ? [
+        "http://127.0.0.1:5001",
+        "http://localhost:5001",
+        "http://127.0.0.1:8082",
+        "http://localhost:8082",
+        "http://127.0.0.1:9099",
+        "http://localhost:9099",
+        "http://127.0.0.1:9199",
+        "http://localhost:9199",
+      ]
+    : []),
+];
+
 const securityHeaders = [
   { key: "X-Frame-Options", value: "DENY" },
   { key: "X-Content-Type-Options", value: "nosniff" },
@@ -13,10 +46,10 @@ const securityHeaders = [
     key: "Content-Security-Policy",
     value: [
       "default-src 'self'",
-      "img-src 'self' data: https://firebasestorage.googleapis.com http://127.0.0.1:9199 http://localhost:9199",
+      `img-src ${imgSources.join(" ")}`,
       "script-src 'self' 'unsafe-inline'",
       "style-src 'self' 'unsafe-inline'",
-      "connect-src 'self' https://*.googleapis.com https://*.firebaseio.com https://*.firebaseapp.com http://127.0.0.1:5001 http://localhost:5001 http://127.0.0.1:8082 http://localhost:8082 http://127.0.0.1:9099 http://localhost:9099 http://127.0.0.1:9199 http://localhost:9199",
+      `connect-src ${connectSources.join(" ")}`,
       "font-src 'self' data:",
       "worker-src 'self'",
       "manifest-src 'self'",
