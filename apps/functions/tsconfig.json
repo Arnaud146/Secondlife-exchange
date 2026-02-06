@@ -1,0 +1,20 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "target": "ES2022",
+    "rootDir": "src",
+    "outDir": "lib",
+    "noEmit": false,
+    "declaration": true,
+    "sourceMap": true,
+    "types": ["node"],
+    "paths": {
+      "@secondlife/shared": ["../../packages/shared/dist/index.d.ts"],
+      "@secondlife/shared/*": ["../../packages/shared/dist/*"]
+    }
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "lib"]
+}

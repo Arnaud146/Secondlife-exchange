@@ -1,0 +1,41 @@
+{
+  "name": "secondlife-exchange",
+  "private": true,
+  "version": "0.1.0",
+  "packageManager": "pnpm@10.2.1",
+  "scripts": {
+    "dev": "pnpm -r --parallel --if-present dev",
+    "dev:web": "pnpm --filter @secondlife/web dev",
+    "dev:functions": "pnpm --filter @secondlife/functions dev",
+    "seed:dev": "pnpm --filter @secondlife/functions seed:dev",
+    "build": "pnpm -r build",
+    "build:functions": "pnpm --filter ./packages/shared build && pnpm --filter ./apps/functions build",
+    "lint": "pnpm -r lint",
+    "test": "pnpm -r test",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^8.20.0",
+    "@typescript-eslint/parser": "^8.20.0",
+    "eslint": "^9.17.0",
+    "eslint-config-next": "^15.1.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-import": "^2.31.0",
+    "eslint-plugin-security": "^3.0.1",
+    "firebase-tools": "^13.34.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.4.3",
+    "prettier": "^3.4.2",
+    "typescript": "^5.7.2"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx,mjs,cjs,json,md,css}": [
+      "prettier --write"
+    ],
+    "*.{ts,tsx,js,jsx,mjs,cjs}": [
+      "eslint --max-warnings=0 --fix"
+    ]
+  }
+}

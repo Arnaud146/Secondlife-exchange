@@ -1,0 +1,157 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return isSignedIn() && request.auth.uid == uid;
+    }
+
+    function currentUserRole() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && currentUserRole() == "admin";
+    }
+
+    function validUserCreate(uid) {
+      return isOwner(uid) &&
+        request.resource.data.keys().hasOnly(["email", "role", "createdAt"]) &&
+        request.resource.data.email is string &&
+        request.resource.data.email == request.auth.token.email &&
+        request.resource.data.role == "user" &&
+        request.resource.data.createdAt is timestamp;
+    }
+
+    function validProfileWrite() {
+      return request.resource.data.keys().hasOnly([
+        "displayName",
+        "bio",
+        "locationOpt",
+        "preferences",
+        "updatedAt"
+      ]) &&
+      request.resource.data.displayName is string &&
+      request.resource.data.displayName.size() >= 2 &&
+      request.resource.data.displayName.size() <= 60 &&
+      request.resource.data.bio is string &&
+      request.resource.data.bio.size() <= 500 &&
+      (!("locationOpt" in request.resource.data) ||
+        request.resource.data.locationOpt == null ||
+        request.resource.data.locationOpt is string) &&
+      request.resource.data.preferences is map &&
+      request.resource.data.updatedAt is timestamp;
+    }
+
+    function validItemCreate() {
+      return request.resource.data.keys().hasOnly([
+        "ownerId",
+        "title",
+        "description",
+        "category",
+        "state",
+        "status",
+        "themeWeekId",
+        "mediaCount",
+        "createdAt",
+        "updatedAt"
+      ]) &&
+      request.resource.data.ownerId == request.auth.uid &&
+      request.resource.data.title is string &&
+      request.resource.data.description is string &&
+      request.resource.data.category is string &&
+      request.resource.data.state in ["new", "like_new", "good", "fair", "repair_needed"] &&
+      request.resource.data.status in ["active", "archived"] &&
+      request.resource.data.mediaCount is int &&
+      request.resource.data.mediaCount >= 0 &&
+      request.resource.data.mediaCount <= 10 &&
+      request.resource.data.createdAt is timestamp &&
+      request.resource.data.updatedAt is timestamp;
+    }
+
+    match /users/{uid} {
+      allow create: if validUserCreate(uid) || isAdmin();
+      allow read: if isOwner(uid) || isAdmin();
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    match /profiles/{uid} {
+      allow create, update: if (isOwner(uid) || isAdmin()) && validProfileWrite();
+      allow read: if isOwner(uid) || isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    match /items/{itemId} {
+      allow read: if true;
+      allow create: if isSignedIn() && validItemCreate();
+      allow update: if isSignedIn() && (
+        (resource.data.ownerId == request.auth.uid &&
+          request.resource.data.ownerId == resource.data.ownerId) ||
+        isAdmin()
+      );
+      allow delete: if isAdmin();
+
+      match /media/{mediaId} {
+        allow read: if true;
+        allow create, update, delete: if isSignedIn() && (
+          get(/databases/$(database)/documents/items/$(itemId)).data.ownerId == request.auth.uid ||
+          isAdmin()
+        );
+      }
+    }
+
+    match /themeWeeks/{themeWeekId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+
+    match /aiSuggestions/{suggestionId} {
+      allow read: if resource.data.published == true || isAdmin();
+      allow create, update, delete: if isAdmin();
+    }
+
+    match /ecoContents/{contentId} {
+      allow read: if (resource.data.publishedAt != null && resource.data.publishedAt <= request.time) || isAdmin();
+      allow create, update, delete: if isAdmin();
+    }
+
+    match /ecoViews/{viewId} {
+      allow create: if request.resource.data.keys().hasOnly(["contentId", "timestamp", "themeWeekId"]) &&
+        request.resource.data.contentId is string &&
+        request.resource.data.timestamp is timestamp &&
+        (!("themeWeekId" in request.resource.data) ||
+          request.resource.data.themeWeekId == null ||
+          request.resource.data.themeWeekId is string);
+      allow read: if isAdmin();
+      allow update, delete: if false;
+    }
+
+    match /exchanges/{exchangeId} {
+      allow read: if isSignedIn() && (
+        resource.data.proposerUserId == request.auth.uid ||
+        resource.data.receiverUserId == request.auth.uid ||
+        isAdmin()
+      );
+      allow create: if isSignedIn() && request.resource.data.proposerUserId == request.auth.uid;
+      allow update: if isSignedIn() && (
+        resource.data.proposerUserId == request.auth.uid ||
+        resource.data.receiverUserId == request.auth.uid ||
+        isAdmin()
+      );
+      allow delete: if isAdmin();
+
+      match /items/{id} {
+        allow read: if isSignedIn();
+        allow create, update, delete: if isSignedIn() && (
+          get(/databases/$(database)/documents/exchanges/$(exchangeId)).data.proposerUserId == request.auth.uid ||
+          get(/databases/$(database)/documents/exchanges/$(exchangeId)).data.receiverUserId == request.auth.uid ||
+          isAdmin()
+        );
+      }
+    }
+  }
+}

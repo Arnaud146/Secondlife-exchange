@@ -1,0 +1,8 @@
+{
+  "projects": {
+    "default": "second-life",
+    "second-life": "second-life-8636f"
+  },
+  "targets": {},
+  "etags": {}
+}
