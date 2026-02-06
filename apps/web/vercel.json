@@ -1,0 +1,4 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "installCommand": "mkdir -p ../functions/vendor/shared && echo '{\"name\":\"@secondlife/shared\",\"version\":\"0.0.0\",\"main\":\"index.js\"}' > ../functions/vendor/shared/package.json && pnpm install"
+}
