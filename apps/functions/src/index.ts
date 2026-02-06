@@ -52,7 +52,7 @@ setGlobalOptions({
  * header. By handling CORS entirely in our own wrapper, we guarantee the
  * correct headers are always set for every request, including OPTIONS.
  */
-const corsRequest = (handler: HttpHandler) => onRequest(withCors(handler));
+const corsRequest = (handler: HttpHandler) => onRequest({ invoker: "public" }, withCors(handler));
 
 export const health = corsRequest(async (req, res) => {
   try {
