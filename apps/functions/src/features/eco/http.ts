@@ -15,6 +15,7 @@ import {
   handleHttpError,
   parseJsonBody,
   sendJson,
+  serializeFirestoreData,
 } from "../../lib/http.js";
 import { assertWithinRateLimit } from "../../lib/rate-limit.js";
 import { assertAdminRole, requireAuthContext } from "../../lib/request-auth.js";
@@ -129,7 +130,7 @@ export async function listEcoContentsHandler(req: Request, res: Response) {
       data: {
         ecoContents: docs.map((doc) => ({
           id: doc.id,
-          ...doc.data(),
+          ...serializeFirestoreData(doc.data()),
         })),
         nextCursor,
       },
@@ -176,7 +177,7 @@ export async function getEcoContentDetailHandler(req: Request, res: Response) {
       data: {
         ecoContent: {
           id: snapshot.id,
-          ...data,
+          ...serializeFirestoreData(data),
         },
       },
     });
@@ -289,7 +290,7 @@ export async function adminListEcoContentsHandler(req: Request, res: Response) {
       data: {
         ecoContents: docs.map((doc) => ({
           id: doc.id,
-          ...doc.data(),
+          ...serializeFirestoreData(doc.data()),
         })),
         nextCursor,
       },

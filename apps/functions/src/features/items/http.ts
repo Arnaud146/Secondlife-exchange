@@ -18,6 +18,7 @@ import {
   handleHttpError,
   parseJsonBody,
   sendJson,
+  serializeFirestoreData,
 } from "../../lib/http.js";
 import { assertWithinRateLimit } from "../../lib/rate-limit.js";
 import { requireAuthContext } from "../../lib/request-auth.js";
@@ -137,7 +138,7 @@ export async function listItemsHandler(req: Request, res: Response) {
       data: {
         items: docs.map((doc) => ({
           id: doc.id,
-          ...doc.data(),
+          ...serializeFirestoreData(doc.data()),
         })),
         nextCursor,
       },
@@ -197,11 +198,11 @@ export async function getItemDetailHandler(req: Request, res: Response) {
       data: {
         item: {
           id: itemSnapshot.id,
-          ...itemData,
+          ...serializeFirestoreData(itemData),
         },
         media: mediaSnapshot.docs.map((doc) => ({
           id: doc.id,
-          ...doc.data(),
+          ...serializeFirestoreData(doc.data()),
         })),
       },
     });

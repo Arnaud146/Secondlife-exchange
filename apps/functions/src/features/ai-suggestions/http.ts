@@ -14,6 +14,7 @@ import {
   handleHttpError,
   parseJsonBody,
   sendJson,
+  serializeFirestoreData,
 } from "../../lib/http.js";
 import { assertWithinRateLimit } from "../../lib/rate-limit.js";
 import { assertAdminRole, requireAuthContext } from "../../lib/request-auth.js";
@@ -85,7 +86,7 @@ export async function listPublishedAiSuggestionsHandler(req: Request, res: Respo
       data: {
         suggestions: docs.map((doc) => ({
           id: doc.id,
-          ...doc.data(),
+          ...serializeFirestoreData(doc.data()),
         })),
         nextCursor,
       },
@@ -139,7 +140,7 @@ export async function listPendingAiSuggestionsHandler(req: Request, res: Respons
       data: {
         suggestions: docs.map((doc) => ({
           id: doc.id,
-          ...doc.data(),
+          ...serializeFirestoreData(doc.data()),
         })),
         nextCursor,
       },

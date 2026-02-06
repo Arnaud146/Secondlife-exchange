@@ -56,6 +56,40 @@ export function sendJson(res: Response, status: number, payload: unknown) {
   res.status(status).json(payload);
 }
 
+/**
+ * Recursively converts Firestore Timestamp objects (which serialize as
+ * `{ _seconds, _nanoseconds }`) into ISO-8601 strings so the JSON response
+ * is clean and passes the shared Zod schemas on the client.
+ */
+export function serializeFirestoreData(data: Record<string, unknown>): Record<string, unknown> {
+  const result: Record<string, unknown> = {};
+
+  for (const [key, value] of Object.entries(data)) {
+    if (value === null || value === undefined) {
+      result[key] = value;
+    } else if (
+      typeof value === "object" &&
+      "toDate" in (value as object) &&
+      typeof (value as { toDate?: unknown }).toDate === "function"
+    ) {
+      // Firestore Timestamp — convert to ISO string
+      result[key] = (value as { toDate: () => Date }).toDate().toISOString();
+    } else if (Array.isArray(value)) {
+      result[key] = value.map((item) =>
+        typeof item === "object" && item !== null
+          ? serializeFirestoreData(item as Record<string, unknown>)
+          : item,
+      );
+    } else if (typeof value === "object") {
+      result[key] = serializeFirestoreData(value as Record<string, unknown>);
+    } else {
+      result[key] = value;
+    }
+  }
+
+  return result;
+}
+
 export function parseJsonBody<T>(req: Request): T {
   if (!req.body || typeof req.body !== "object") {
     throw new HttpError(400, "Invalid JSON body.");

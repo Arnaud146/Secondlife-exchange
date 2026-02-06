@@ -10,6 +10,7 @@ import {
   handleHttpError,
   parseJsonBody,
   sendJson,
+  serializeFirestoreData,
 } from "../../lib/http.js";
 import { assertWithinRateLimit } from "../../lib/rate-limit.js";
 import { assertAdminRole, requireAuthContext } from "../../lib/request-auth.js";
@@ -109,7 +110,7 @@ export async function getCurrentThemeWeekHandler(req: Request, res: Response) {
       data: {
         currentTheme: {
           id: currentDoc.id,
-          ...currentDoc.data(),
+          ...serializeFirestoreData(currentDoc.data()),
         },
       },
     });
@@ -155,7 +156,7 @@ export async function listThemeWeeksHandler(req: Request, res: Response) {
       data: {
         themeWeeks: docs.map((doc) => ({
           id: doc.id,
-          ...doc.data(),
+          ...serializeFirestoreData(doc.data()),
         })),
         nextCursor,
       },
