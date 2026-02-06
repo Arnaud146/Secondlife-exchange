@@ -27,7 +27,11 @@ function getFunctionsBaseUrl() {
     throw new Error("NEXT_PUBLIC_FIREBASE_PROJECT_ID is required.");
   }
 
-  if (process.env.NEXT_PUBLIC_USE_FIREBASE_EMULATORS === "true") {
+  const isLocalhost =
+    typeof window !== "undefined" &&
+    (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1");
+
+  if (process.env.NEXT_PUBLIC_USE_FIREBASE_EMULATORS === "true" && isLocalhost) {
     return `http://127.0.0.1:5001/${projectId}/europe-west1`;
   }
 

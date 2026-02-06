@@ -18,7 +18,15 @@ export const auth = getAuth(app);
 export const db = getFirestore(app);
 export const storage = getStorage(app);
 
-if (process.env.NEXT_PUBLIC_USE_FIREBASE_EMULATORS === "true" && typeof window !== "undefined") {
+// Only connect to emulators when BOTH the env flag is set AND we are on localhost.
+// The runtime hostname check is a safety net in case the env var is misconfigured
+// during a production build (NEXT_PUBLIC_* vars are inlined at build time).
+const isEmulatorEnv = process.env.NEXT_PUBLIC_USE_FIREBASE_EMULATORS === "true";
+const isLocalhost =
+  typeof window !== "undefined" &&
+  (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1");
+
+if (isEmulatorEnv && isLocalhost) {
   const globalWithFirebase = globalThis as typeof globalThis & {
     __secondlifeFirebaseEmulatorsConnected?: boolean;
   };
