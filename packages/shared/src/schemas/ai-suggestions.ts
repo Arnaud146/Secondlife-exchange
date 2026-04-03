@@ -11,7 +11,7 @@ export const aiDiversityFlagsSchema = z
     repairable: z.boolean().optional(),
     localCraft: z.boolean().optional(),
   })
-  .catchall(z.boolean());
+  .strict();
 
 export const aiProviderSuggestionSchema = z
   .object({

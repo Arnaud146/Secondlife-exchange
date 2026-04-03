@@ -3,6 +3,7 @@ import type { HttpsFunction, Request } from "firebase-functions/v2/https";
 import { FieldValue } from "firebase-admin/firestore";
 
 import { env } from "../../config/env.js";
+import { toDateSafe } from "../../lib/dates.js";
 import { adminDb } from "../../lib/firebase-admin.js";
 import {
   HttpError,
@@ -27,48 +28,18 @@ function queryParamValue(value: unknown): string | undefined {
   return undefined;
 }
 
-function toDateSafe(value: unknown): Date | null {
-  if (value instanceof Date) {
-    return Number.isNaN(value.getTime()) ? null : value;
-  }
-
-  if (
-    typeof value === "object" &&
-    value !== null &&
-    "toDate" in value &&
-    typeof (value as { toDate?: unknown }).toDate === "function"
-  ) {
-    const date = (value as { toDate: () => Date }).toDate();
-    return Number.isNaN(date.getTime()) ? null : date;
-  }
-
-  if (typeof value === "string") {
-    const date = new Date(value);
-    return Number.isNaN(date.getTime()) ? null : date;
-  }
-
-  if (
-    typeof value === "object" &&
-    value !== null &&
-    "seconds" in value &&
-    typeof (value as { seconds?: unknown }).seconds === "number"
-  ) {
-    const date = new Date((value as { seconds: number }).seconds * 1000);
-    return Number.isNaN(date.getTime()) ? null : date;
-  }
-
-  return null;
-}
-
 function getClientKey(req: Request): string {
-  const forwardedFor = req.get("x-forwarded-for");
-  const firstForwarded = forwardedFor?.split(",")[0]?.trim();
-
-  if (firstForwarded) {
-    return firstForwarded;
+  if (req.ip) {
+    return req.ip;
   }
 
-  return req.ip ?? "unknown";
+  const forwardedFor = req.get("x-forwarded-for");
+  if (forwardedFor) {
+    const parts = forwardedFor.split(",");
+    return parts[parts.length - 1]!.trim();
+  }
+
+  return "unknown";
 }
 
 export async function getCurrentThemeWeekHandler(req: Request, res: Response) {

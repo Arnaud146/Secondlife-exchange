@@ -10,7 +10,10 @@ export const ecoContentDocSchema = z
     type: ecoContentTypeSchema,
     title: z.string().min(3).max(180),
     summary: z.string().min(10).max(1000),
-    sourceUrl: z.string().url(),
+    sourceUrl: z
+      .string()
+      .url()
+      .refine((u) => u.startsWith("https://") || u.startsWith("http://"), "URL must use http(s)"),
     tags: z.array(z.string().min(2).max(30)).min(1).max(10),
     lang: z.string().min(2).max(10),
     publishedAt: firestoreTimestampSchema,
@@ -55,7 +58,10 @@ export const createEcoContentInputSchema = z
     type: ecoContentTypeSchema,
     title: z.string().trim().min(3).max(180),
     summary: z.string().trim().min(10).max(1000),
-    sourceUrl: z.string().url(),
+    sourceUrl: z
+      .string()
+      .url()
+      .refine((u) => u.startsWith("https://") || u.startsWith("http://"), "URL must use http(s)"),
     tags: z.array(z.string().trim().min(2).max(30)).min(1).max(10),
     lang: z.string().trim().min(2).max(10),
     publishedAtIso: z.string().datetime().optional(),

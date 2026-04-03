@@ -11,6 +11,7 @@ export default [
       "**/dist/**",
       "apps/functions/lib/**",
       "**/.firebase/**",
+      "**/coverage/**",
     ],
   },
   {
@@ -26,6 +27,9 @@ export default [
       security: securityPlugin,
     },
     rules: {
+      ...tsEslintPlugin.configs.recommended.rules,
+      ...securityPlugin.configs.recommended.rules,
+      "security/detect-object-injection": "off",
       "import/no-unresolved": "off",
       "@typescript-eslint/consistent-type-imports": [
         "error",

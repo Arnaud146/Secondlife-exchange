@@ -66,7 +66,7 @@ export async function POST(request: NextRequest) {
 
     if (!profileSnapshot.exists) {
       await profileRef.set({
-        displayName: getDefaultDisplayName(email),
+        displayName: decodedToken.name || getDefaultDisplayName(email),
         bio: "",
         locationOpt: null,
         preferences: {},
@@ -107,7 +107,10 @@ export async function POST(request: NextRequest) {
       {
         success: false,
         error: {
-          message: error instanceof Error ? error.message : "Unable to create session.",
+          message:
+            isValidationError && error instanceof Error
+              ? error.message
+              : "Unable to create session.",
         },
       },
       { status: isValidationError ? 400 : 401 },

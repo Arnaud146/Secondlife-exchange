@@ -6,6 +6,20 @@ type Bucket = {
 };
 
 const buckets = new Map<string, Bucket>();
+const MAX_BUCKETS = 10_000;
+const STALE_THRESHOLD_MS = 10 * 60 * 1000;
+let lastCleanup = Date.now();
+
+function evictStaleBuckets(now: number) {
+  if (now - lastCleanup < STALE_THRESHOLD_MS) return;
+  lastCleanup = now;
+
+  for (const [key, bucket] of buckets) {
+    if (now - bucket.lastRefill > STALE_THRESHOLD_MS) {
+      buckets.delete(key);
+    }
+  }
+}
 
 export function assertWithinRateLimit(params: {
   key: string;
@@ -13,6 +27,11 @@ export function assertWithinRateLimit(params: {
   refillWindowMs: number;
 }) {
   const now = Date.now();
+
+  if (buckets.size > MAX_BUCKETS) {
+    evictStaleBuckets(now);
+  }
+
   const refillRate = params.maxTokens / params.refillWindowMs;
 
   const bucket = buckets.get(params.key) ?? {

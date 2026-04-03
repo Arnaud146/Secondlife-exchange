@@ -4,7 +4,13 @@ import { FieldValue } from "firebase-admin/firestore";
 
 import { env } from "../../config/env.js";
 import { adminDb } from "../../lib/firebase-admin.js";
-import { assertMethod, handleHttpError, parseJsonBody, sendJson } from "../../lib/http.js";
+import {
+  assertMethod,
+  handleHttpError,
+  parseJsonBody,
+  sendJson,
+  serializeFirestoreData,
+} from "../../lib/http.js";
 import { assertWithinRateLimit } from "../../lib/rate-limit.js";
 import { requireAuthContext } from "../../lib/request-auth.js";
 
@@ -41,7 +47,7 @@ export async function getMyProfileHandler(req: Request, res: Response) {
     const refreshedSnapshot = await profileRef.get();
     sendJson(res, 200, {
       success: true,
-      data: refreshedSnapshot.data(),
+      data: serializeFirestoreData(refreshedSnapshot.data() as Record<string, unknown>),
     });
   } catch (error) {
     handleHttpError(res, error);

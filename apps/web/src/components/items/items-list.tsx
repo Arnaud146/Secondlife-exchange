@@ -5,25 +5,8 @@ import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import { formatDate as formatCreatedAt } from "@/lib/dates";
 import { listItems, type ItemSummary } from "@/lib/items/client";
-
-function formatCreatedAt(value: unknown) {
-  if (typeof value === "string") {
-    const date = new Date(value);
-    if (!Number.isNaN(date.getTime())) {
-      return date.toLocaleDateString();
-    }
-  }
-
-  if (typeof value === "object" && value !== null && "seconds" in value) {
-    const seconds = (value as { seconds?: number }).seconds;
-    if (typeof seconds === "number") {
-      return new Date(seconds * 1000).toLocaleDateString();
-    }
-  }
-
-  return "Inconnu";
-}
 
 export function ItemsList() {
   const [items, setItems] = useState<ItemSummary[]>([]);

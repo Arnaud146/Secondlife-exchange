@@ -15,7 +15,9 @@ export const profileDocSchema = z
     displayName: z.string().min(2).max(60),
     bio: z.string().max(500).default(""),
     locationOpt: z.string().max(120).nullable().optional(),
-    preferences: z.record(z.union([z.string(), z.number(), z.boolean(), z.array(z.string())])),
+    preferences: z
+      .record(z.union([z.string(), z.number(), z.boolean(), z.array(z.string())]))
+      .refine((obj) => Object.keys(obj).length <= 20, "Too many preference keys (max 20)"),
     updatedAt: firestoreTimestampSchema,
   })
   .strict();
@@ -27,6 +29,7 @@ export const upsertProfileInputSchema = z
     locationOpt: z.string().max(120).nullable().optional(),
     preferences: z
       .record(z.union([z.string(), z.number(), z.boolean(), z.array(z.string())]))
+      .refine((obj) => Object.keys(obj).length <= 20, "Too many preference keys (max 20)")
       .optional(),
   })
   .strict();

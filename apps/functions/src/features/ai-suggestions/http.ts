@@ -32,17 +32,6 @@ function queryParamValue(value: unknown): string | undefined {
   return undefined;
 }
 
-function getClientKey(req: Request): string {
-  const forwardedFor = req.get("x-forwarded-for");
-  const firstForwarded = forwardedFor?.split(",")[0]?.trim();
-
-  if (firstForwarded) {
-    return firstForwarded;
-  }
-
-  return req.ip ?? "unknown";
-}
-
 export async function listPublishedAiSuggestionsHandler(req: Request, res: Response) {
   try {
     assertMethod(req, "GET");

@@ -6,26 +6,9 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import { formatDate } from "@/lib/dates";
 import { auth } from "@/lib/firebase/client";
 import { getItemDetail, type ItemDetail } from "@/lib/items/client";
-
-function formatDate(value: unknown) {
-  if (typeof value === "string") {
-    const date = new Date(value);
-    if (!Number.isNaN(date.getTime())) {
-      return date.toLocaleString();
-    }
-  }
-
-  if (typeof value === "object" && value !== null && "seconds" in value) {
-    const seconds = (value as { seconds?: number }).seconds;
-    if (typeof seconds === "number") {
-      return new Date(seconds * 1000).toLocaleString();
-    }
-  }
-
-  return "Inconnu";
-}
 
 export function ItemDetailView({ itemId }: { itemId: string }) {
   const [detail, setDetail] = useState<ItemDetail | null>(null);

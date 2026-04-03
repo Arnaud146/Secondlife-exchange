@@ -72,6 +72,53 @@ service cloud.firestore {
       request.resource.data.updatedAt is timestamp;
     }
 
+    function validItemUpdate() {
+      return request.resource.data.keys().hasOnly([
+        "ownerId",
+        "title",
+        "description",
+        "category",
+        "state",
+        "status",
+        "themeWeekId",
+        "mediaCount",
+        "createdAt",
+        "updatedAt"
+      ]) &&
+      request.resource.data.ownerId == resource.data.ownerId &&
+      request.resource.data.createdAt == resource.data.createdAt &&
+      request.resource.data.title is string &&
+      request.resource.data.description is string &&
+      request.resource.data.category is string &&
+      request.resource.data.state in ["new", "like_new", "good", "fair", "repair_needed"] &&
+      request.resource.data.status in ["active", "archived"] &&
+      request.resource.data.mediaCount is int &&
+      request.resource.data.mediaCount >= 0 &&
+      request.resource.data.mediaCount <= 10 &&
+      request.resource.data.updatedAt is timestamp;
+    }
+
+    function validExchangeCreate() {
+      return request.resource.data.keys().hasOnly([
+        "proposerUserId",
+        "receiverUserId",
+        "status",
+        "createdAt"
+      ]) &&
+      request.resource.data.proposerUserId == request.auth.uid &&
+      request.resource.data.receiverUserId is string &&
+      request.resource.data.receiverUserId != request.auth.uid &&
+      request.resource.data.status == "created" &&
+      request.resource.data.createdAt is timestamp;
+    }
+
+    function validExchangeUpdate() {
+      return request.resource.data.proposerUserId == resource.data.proposerUserId &&
+        request.resource.data.receiverUserId == resource.data.receiverUserId &&
+        request.resource.data.createdAt == resource.data.createdAt &&
+        request.resource.data.status in ["created", "closed"];
+    }
+
     match /users/{uid} {
       allow create: if validUserCreate(uid) || isAdmin();
       allow read: if isOwner(uid) || isAdmin();
@@ -89,8 +136,7 @@ service cloud.firestore {
       allow read: if true;
       allow create: if isSignedIn() && validItemCreate();
       allow update: if isSignedIn() && (
-        (resource.data.ownerId == request.auth.uid &&
-          request.resource.data.ownerId == resource.data.ownerId) ||
+        (resource.data.ownerId == request.auth.uid && validItemUpdate()) ||
         isAdmin()
       );
       allow delete: if isAdmin();
@@ -120,12 +166,17 @@ service cloud.firestore {
     }
 
     match /ecoViews/{viewId} {
-      allow create: if request.resource.data.keys().hasOnly(["contentId", "timestamp", "themeWeekId"]) &&
+      // Views are tracked via Cloud Functions (server-side) with rate limiting.
+      // Direct client writes require authentication to prevent abuse.
+      allow create: if isSignedIn() &&
+        request.resource.data.keys().hasOnly(["contentId", "timestamp", "themeWeekId"]) &&
         request.resource.data.contentId is string &&
+        request.resource.data.contentId.size() <= 128 &&
         request.resource.data.timestamp is timestamp &&
         (!("themeWeekId" in request.resource.data) ||
           request.resource.data.themeWeekId == null ||
-          request.resource.data.themeWeekId is string);
+          (request.resource.data.themeWeekId is string &&
+           request.resource.data.themeWeekId.size() <= 128));
       allow read: if isAdmin();
       allow update, delete: if false;
     }
@@ -136,10 +187,11 @@ service cloud.firestore {
         resource.data.receiverUserId == request.auth.uid ||
         isAdmin()
       );
-      allow create: if isSignedIn() && request.resource.data.proposerUserId == request.auth.uid;
+      allow create: if isSignedIn() && validExchangeCreate();
       allow update: if isSignedIn() && (
-        resource.data.proposerUserId == request.auth.uid ||
-        resource.data.receiverUserId == request.auth.uid ||
+        (resource.data.proposerUserId == request.auth.uid ||
+          resource.data.receiverUserId == request.auth.uid) &&
+        validExchangeUpdate() ||
         isAdmin()
       );
       allow delete: if isAdmin();

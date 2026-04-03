@@ -1,8 +1,20 @@
 import type { HttpsFunction, Request } from "firebase-functions/v2/https";
 
+import { env } from "../config/env.js";
+import { logError } from "./logger.js";
+
 type Response = Parameters<HttpsFunction>[1];
 
 export type HttpHandler = (req: Request, res: Response) => void | Promise<void>;
+
+function isOriginAllowed(origin: string | undefined): string | null {
+  if (!origin) return null;
+
+  const allowed = env.CORS_ALLOWED_ORIGINS;
+  if (allowed.length === 0) return origin;
+
+  return allowed.includes(origin) ? origin : null;
+}
 
 /**
  * Wraps an HTTP handler with explicit CORS support.
@@ -14,8 +26,9 @@ export type HttpHandler = (req: Request, res: Response) => void | Promise<void>;
 export function withCors(handler: HttpHandler): HttpHandler {
   return async (req, res) => {
     const origin = req.headers.origin;
+    const allowedOrigin = isOriginAllowed(origin);
 
-    res.set("Access-Control-Allow-Origin", origin || "*");
+    res.set("Access-Control-Allow-Origin", allowedOrigin || "");
     res.set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
     res.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
     res.set("Access-Control-Max-Age", "3600");
@@ -31,6 +44,10 @@ export function withCors(handler: HttpHandler): HttpHandler {
       // Safety net: if the handler throws an unhandled error, we still return
       // a proper JSON response with CORS headers already set above, instead
       // of letting the Cloud Functions runtime send a raw 500 without them.
+      logError("unhandled_http_error", {
+        message: error instanceof Error ? error.message : String(error),
+        stack: error instanceof Error ? error.stack : undefined,
+      });
       if (!res.headersSent) {
         res.status(500).json({
           success: false,
@@ -114,6 +131,11 @@ export function handleHttpError(res: Response, error: unknown) {
     });
     return;
   }
+
+  logError("http_internal_error", {
+    message: error instanceof Error ? error.message : String(error),
+    stack: error instanceof Error ? error.stack : undefined,
+  });
 
   sendJson(res, 500, {
     success: false,

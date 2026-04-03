@@ -2,7 +2,7 @@ import type { HttpsFunction, Request } from "firebase-functions/v2/https";
 
 import { env } from "../../config/env.js";
 import { adminDb } from "../../lib/firebase-admin.js";
-import { assertMethod, handleHttpError, sendJson } from "../../lib/http.js";
+import { assertMethod, handleHttpError, sendJson, serializeFirestoreData } from "../../lib/http.js";
 import { assertWithinRateLimit } from "../../lib/rate-limit.js";
 import { assertAdminRole, requireAuthContext } from "../../lib/request-auth.js";
 
@@ -21,12 +21,15 @@ export async function adminListUsersHandler(req: Request, res: Response) {
     });
 
     const snapshot = await adminDb.collection("users").limit(50).get();
-    const users = snapshot.docs.map((doc) => ({
-      uid: doc.id,
-      email: doc.data().email ?? "",
-      role: doc.data().role ?? "user",
-      createdAt: doc.data().createdAt ?? null,
-    }));
+    const users = snapshot.docs.map((doc) => {
+      const data = serializeFirestoreData(doc.data() as Record<string, unknown>);
+      return {
+        uid: doc.id,
+        email: (data.email as string) ?? "",
+        role: (data.role as string) ?? "user",
+        createdAt: data.createdAt ?? null,
+      };
+    });
 
     sendJson(res, 200, {
       success: true,

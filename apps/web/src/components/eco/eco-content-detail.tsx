@@ -1,33 +1,10 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
+import { toDateSafe } from "@/lib/dates";
 import { getEcoContentDetail, trackEcoView, type EcoContentSummary } from "@/lib/eco/client";
-
-function toDateSafe(value: unknown): Date | null {
-  if (value instanceof Date) {
-    return Number.isNaN(value.getTime()) ? null : value;
-  }
-
-  if (typeof value === "string") {
-    const date = new Date(value);
-    return Number.isNaN(date.getTime()) ? null : date;
-  }
-
-  if (
-    typeof value === "object" &&
-    value !== null &&
-    "seconds" in value &&
-    typeof (value as { seconds?: unknown }).seconds === "number"
-  ) {
-    const date = new Date((value as { seconds: number }).seconds * 1000);
-    return Number.isNaN(date.getTime()) ? null : date;
-  }
-
-  return null;
-}
 
 function formatDate(value: unknown): string {
   const date = toDateSafe(value);
@@ -126,9 +103,9 @@ export function EcoContentDetail({ contentId }: { contentId: string }) {
         <h2 className="font-heading text-xl font-bold">Source</h2>
         <p className="text-sm text-muted-foreground">Langue : {content.lang.toUpperCase()}</p>
         <Button asChild>
-          <Link href={content.sourceUrl} target="_blank" rel="noreferrer noopener">
+          <a href={content.sourceUrl} target="_blank" rel="noreferrer noopener">
             Ouvrir la source
-          </Link>
+          </a>
         </Button>
       </section>
     </section>
